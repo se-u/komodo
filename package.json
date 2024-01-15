@@ -1,5 +1,6 @@
 {
   "name": "komodo",
+  "engines": { "node": "20.10.0" },
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,16 +10,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
+    "faker": "^5.5.3",
+    "next": "14.0.4",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.0.4"
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.0.4"
+    "eslint-config-next": "14.0.4",
+    "hardhat": "^2.19.4",
+    "typescript": "^5"
   }
 }

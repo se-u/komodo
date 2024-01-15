@@ -1,0 +1,46 @@
+.jumbotronAbout {
+  background-color: #012169;
+  display: grid;
+  height: 433px;
+  grid-template-columns: 1fr; 
+  padding: 2em; 
+  gap: 10px; 
+  justify-content: center;
+  align-items: center;
+}
+
+.textOneAbout{
+  text-align: left;
+  padding-left: 10px;
+}
+
+.textOneAbout h1{
+  color: white;
+  display: inline;
+  border-bottom: 4px solid #F0B323;
+  
+}
+
+.textOneAbout h2{
+  padding-top: 50px; 
+  color: #F0B323;
+}
+
+.textOneAbout h3{
+  color: white;
+  font-style: italic;
+}
+
+
+
+.textTwoAbout p{
+  color: white;
+  padding: 5px;
+}
+
+
+@media screen and (min-width: 768px) {
+  .jumbotronAbout {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Raleway:wght@400;500;600;700;800&display=swap");
+
+
+.jumbotron {
+  grid-template-columns: 50% auto;
+  display: grid;
+  height: 433px;
+  padding: 2em; 
+  gap: 10px; 
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.text {
+  padding-top: 80px;
+  padding-right: 4px;
+  padding-left: 30px;
+}
+
+.text h1 {
+  color: #012169;
+  font-size: 50px;
+  display: inline;
+  border-bottom: 8px solid #F0B323;
+}
+
+.text h2 {
+  padding-top:15px;
+  color: #F7630c;
+  font-size: 20px;
+}
+
+.text h3 {
+  margin-top: 25px;
+  color: rgb(38, 62, 83);
+}
+
+.text p {
+  font-style:italic;
+  color: rgb(38, 62, 83);
+}
+
+.text button {
+  margin-top: 10px;
+  color: white;
+  padding: 10px 20px;
+  background-color: #0f1035;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.text button:hover {
+  background-color: #1c1e50;
+}
+
+.imageprof img {
+  width: 315px;
+  height: auto;
+  animation: animate 5s ease-in-out infinite;
+  transition: all 1s ease-in-out;
+}
+
+
+@media (max-width: 768px) {
+  .jumbotron {
+    grid-template-columns: 1fr;
+    gap: 0px;
+  }
+  .jumbotron .text {
+    margin: 2vh;
+    padding: 4vh;
+  }
+  .jumbotron .imageprof {
+    margin: 10vh;
+  }
+
+  .text {
+    padding-top: 0px;
+    padding-right: 4px;
+    padding-left: 0px;
+  }
+
+  .text h1 {
+    color: #365486;
+    font-size: 40px;
+  }
+}
