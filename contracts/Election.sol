@@ -14,7 +14,7 @@ contract Election {
     struct Voter {
         bool isRegistered;
         bool isVerified;
-        string name; 
+        string name;
         string idCard;
         address account;
     }
@@ -37,8 +37,8 @@ contract Election {
         _;
     }
 
-    modifier onlyAdmin(){
-        require(isAdmin[msg.sender],"Only admin can access this");
+    modifier onlyAdmin() {
+        require(isAdmin[msg.sender], "Only admin can access this");
         _;
     }
 
@@ -48,7 +48,10 @@ contract Election {
     }
 
     modifier onlyAfterElectionEnd() {
-        require(block.timestamp >= electionEndTime, "Election is still ongoing");
+        require(
+            block.timestamp >= electionEndTime,
+            "Election is still ongoing"
+        );
         _;
     }
 
@@ -68,16 +71,21 @@ contract Election {
         electionEndTime = block.timestamp + (_durationInMinutes * 1 minutes);
     }
 
-    function addCandidate(string memory _name, string memory _image) public onlyOwner onlyAdmin onlyBeforeElectionEnd {
-        candidates.push(Candidate({
-            name: _name,
-            image: _image,
-            voteCount: 0
-        }));
+    function addCandidate(
+        string memory _name,
+        string memory _image
+    ) public onlyOwner onlyAdmin onlyBeforeElectionEnd {
+        candidates.push(Candidate({name: _name, image: _image, voteCount: 0}));
     }
 
-    function registerVoter(string memory _name, string memory _idCard) public onlyBeforeElectionEnd {
-        require(!voters[msg.sender].isRegistered, "Voter is already registered");
+    function registerVoter(
+        string memory _name,
+        string memory _idCard
+    ) public onlyBeforeElectionEnd {
+        require(
+            !voters[msg.sender].isRegistered,
+            "Voter is already registered"
+        );
         voters[msg.sender].name = _name;
         voters[msg.sender].idCard = _idCard;
         voters[msg.sender].account = msg.sender;
@@ -86,26 +94,50 @@ contract Election {
         emit VoterRegistered(msg.sender, _name, _idCard);
     }
 
-    function verifyVoter(address _voterAddress) public onlyOwner onlyAdmin onlyBeforeElectionEnd {
+    function getVoterByName(
+        string memory _name
+    ) public view returns (Voter memory) {
+        for (uint i = 0; i < registeredAddress.length; i++) {
+            address _address = registeredAddress[i];
+            if (
+                keccak256(abi.encodePacked(voters[_address].name)) ==
+                keccak256(abi.encodePacked(_name))
+            ) {
+                return voters[_address];
+            }
+        }
+
+        revert("Voter not found");
+    }
+
+    function verifyVoter(
+        address _voterAddress
+    ) public onlyOwner onlyAdmin onlyBeforeElectionEnd {
         require(voters[_voterAddress].isRegistered, "Voter is not registered");
         require(!voters[_voterAddress].isVerified, "Voter is already verified");
         voters[_voterAddress].isVerified = true;
         emit VoterVerified(_voterAddress);
     }
 
-    function getAllVoters() public view onlyOwner onlyAdmin returns (Voter[] memory) {
+    function getAllVoters()
+        public
+        view
+        onlyOwner
+        onlyAdmin
+        returns (Voter[] memory)
+    {
         uint256 totalRegistered = registeredAddress.length;
         Voter[] memory allVoters = new Voter[](totalRegistered);
-        for (uint256 i=0; i < totalRegistered; i++){
+        for (uint256 i = 0; i < totalRegistered; i++) {
             address _address = registeredAddress[i];
             allVoters[i] = voters[_address];
         }
         return allVoters;
-
     }
 
-
-    function vote(uint _candidateIndex) public onlyRegisteredVoter onlyVerifiedVoter onlyBeforeElectionEnd {
+    function vote(
+        uint _candidateIndex
+    ) public onlyRegisteredVoter onlyVerifiedVoter onlyBeforeElectionEnd {
         require(!voted[msg.sender], "You have already voted");
         require(_candidateIndex < candidates.length, "Invalid candidate index");
 
@@ -128,7 +160,11 @@ contract Election {
         return votes;
     }
 
-    function getStatusVote() public view returns (bool hasVoted, uint voteTimestamp_) {
+    function getStatusVote()
+        public
+        view
+        returns (bool hasVoted, uint voteTimestamp_)
+    {
         return (voted[msg.sender], voteTimestamp[msg.sender]);
     }
 

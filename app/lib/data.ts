@@ -2,7 +2,7 @@
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { ContractRunner, ethers } from "ethers";
 
-const CONTRACT = "0xd926AF0e7EdA928aB0ed411AcEe5cAc90784ef07";
+const CONTRACT = "0xAe134d2896b21D99C000B442704de133D34cC151";
 
 export async function connectToMetaMask() {
   // Check if MetaMask is installed
@@ -36,6 +36,31 @@ export async function fetchCanditates() {
       };
     });
     return formattedCandidates;
+  }
+}
+
+export async function fetchCredential() {
+  const contract = await connectToMetaMask();
+  if (contract) {
+    try {
+      const credential = await contract.getVoterByName("jack");
+      return {
+        isRegistered: credential[0],
+        isVerified: credential[1],
+        name: credential[2],
+        idCard: credential[3],
+        account: credential[4],
+      };
+      // credential.map((index) => {
+      //   return {
+      //     isRegistered: credential[index],
+      //     img: credential[index],
+      //     voteCount: ethers.toNumber(candidate.voteCount),
+      //   };
+      // });
+    } catch (error) {
+      return { message: "error" };
+    }
   }
 }
 
