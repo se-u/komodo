@@ -45,3 +45,20 @@ export async function createAccount(formData: FormData) {
   // revalidatePath("/dasboard/invoice");
   redirect("/validate/status");
 }
+
+export async function verifyVoter(voterAddress: string) {
+  const contract = await connectToMetaMask();
+  if (contract) {
+    try {
+      const tx = await contract.verifyVoter(voterAddress);
+      // const receipt = await tx.wait();
+      console.log(`receipt: ${tx}`);
+    } catch (error) {
+      console.log(`failed to register: ${error.message}`);
+    }
+  }
+  console.log(voterAddress);
+  console.log("terpanggil");
+  // revalidatePath("/dasboard/voter");
+  // redirect("/validate/status");
+}

@@ -64,6 +64,52 @@ export async function fetchCredential() {
   }
 }
 
+export async function fetchVoters() {
+  const contract = await connectToMetaMask();
+  if (contract) {
+    try {
+      const voters = await contract.getAllVoters();
+      const votersFormatted = voters.map((voter, index) => {
+        return {
+          index: index,
+          isRegistered: voter[0],
+          isVerified: voter[1],
+          name: voter[2],
+          idCard: voter[3],
+          account: voter[4],
+        };
+      });
+      return votersFormatted;
+      // credential.map((index) => {
+      //   return {
+      //     isRegistered: credential[index],
+      //     img: credential[index],
+      //     voteCount: ethers.toNumber(candidate.voteCount),
+      //   };
+      // });
+    } catch (error) {
+      return { message: "error" };
+    }
+  }
+}
+
+export async function fetchRemainingTime() {
+  const contract = await connectToMetaMask();
+  if (contract) {
+    try {
+      console.log("terpanggil time");
+
+      const tx = await contract.getRemainingTime();
+      return tx;
+    } catch (error) {
+      console.log(`failed to register: ${error.message}`);
+    }
+  }
+  // console.log(voterAddress);
+  // revalidatePath("/dasboard/voter");
+  // redirect("/validate/status");
+}
+
 export async function pushCanditate(signer: ContractRunner) {
   const contract = await connectToMetaMask();
   if (contract) {
