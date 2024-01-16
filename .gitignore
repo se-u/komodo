@@ -16,6 +16,8 @@ artifacts
 /.next/
 /out/
 
+/.idea/
+
 # production
 /build
 
