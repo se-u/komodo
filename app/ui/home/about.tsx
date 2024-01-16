@@ -3,7 +3,7 @@ import { fetchCanditates } from "@/app/lib/data";
 import styles from "./about.module.css";
 import { useCallback } from "react";
 
-export default function Info() {
+export default function AboutJumbotron() {
   const _fetchCandidate = useCallback(async () => {
     const result = await fetchCanditates();
     console.log(result);

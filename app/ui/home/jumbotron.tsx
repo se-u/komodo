@@ -1,8 +1,5 @@
-/* eslint-disable react/prop-types */
-// import "./styles/Login.css"; // Import the CSS file
 import Image from "next/image";
 import styles from "./jumbotron.module.css";
-// { connectWallet? }
 export default function Jumbotron() {
   return (
     <>
