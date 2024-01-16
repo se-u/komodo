@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import loading from "../guide/loading";
 import { ConnectSkeleton } from "./skeleton";
+import  Hint from "./home/hint";
 
 export async function ConnectButton() {
   const [proxy, setProxy] = useState(false);
@@ -24,11 +25,6 @@ export async function ConnectButton() {
   }
 
   return (
-    <div className="flex justify-center">
-      <div className="flex-col">
-        test
-        {/* <Suspense fallback={ConnectSkeleton}></Suspense> */}
-      </div>
-    </div>
+    <Hint />
   );
 }
