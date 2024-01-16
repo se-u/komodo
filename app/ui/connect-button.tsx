@@ -2,10 +2,9 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { connectToMetaMask } from "../lib/data";
-import Link from "next/link";
-import { Suspense } from "react";
-import loading from "../guide/loading";
+//
 import { ConnectSkeleton } from "./skeleton";
+import Hint from "./home/hint";
 
 export async function ConnectButton() {
   const [proxy, setProxy] = useState(false);
@@ -23,12 +22,5 @@ export async function ConnectButton() {
     return <ConnectSkeleton />;
   }
 
-  return (
-    <div className="flex justify-center">
-      <div className="flex-col">
-        test
-        {/* <Suspense fallback={ConnectSkeleton}></Suspense> */}
-      </div>
-    </div>
-  );
+  return <Hint />;
 }
