@@ -1,7 +1,7 @@
 import Pagination from "@/app/ui/voter/pagination";
 import Search from "@/app/ui/search";
 import Table from "@/app/ui/voter/table";
-import { CreateInvoice } from "@/app/ui/buttons";
+import { CreateVoter } from "@/app/ui/buttons";
 
 export default async function Page() {
   return (
@@ -11,7 +11,7 @@ export default async function Page() {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search voter..." />
-        <CreateInvoice />
+        <CreateVoter />
       </div>
       <Table currentPage={1} />
       <div className="mt-5 flex w-full justify-center">
