@@ -17,7 +17,7 @@ const links = [
     href: "/dashboard/voter",
     icon: DocumentDuplicateIcon,
   },
-  { name: "Settings", href: "/dashboard/setting", icon: Cog6ToothIcon },
+  { name: "Settings", href: "/dashboard/settings", icon: Cog6ToothIcon },
 ];
 
 export default function NavLinks() {
