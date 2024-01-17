@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
+
+// Import an external library for generating UUIDs
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Election {
+    // using Strings for uint256;
+
     address public owner;
     uint public electionEndTime;
 
@@ -14,167 +19,241 @@ contract Election {
     struct Voter {
         bool isRegistered;
         bool isVerified;
+        string id;
         string name;
         string idCard;
         address account;
     }
 
+    struct uuidToId {
+        string idcard;
+    }
+
     // Dictionary of voters (address: Voter)
-    address[] registeredAddress;
-    mapping(address => Voter) public voters;
-    mapping(address => bool) public voted;
-    mapping(address => uint) public voteTimestamp;
+    string[] registeredIdCard;
+    mapping(string => Voter) public voters;
+    mapping(string => uuidToId) public getIdCard;
+    mapping(string => bool) public voted;
+    mapping(string => uint) public voteTimestamp;
     mapping(address => bool) public isAdmin;
 
     Candidate[] public candidates;
 
-    event VoterRegistered(address indexed voter, string name, string idCard);
-    event VoterVerified(address indexed voter);
-    event Voted(address indexed voter, uint indexed candidateIndex);
+    event VoterRegistered(
+        address indexed electionAccount,
+        string name,
+        string idCard,
+        string uuid
+    );
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-
-    modifier onlyAdmin() {
-        require(isAdmin[msg.sender], "Only admin can access this");
-        _;
-    }
-
-    modifier onlyBeforeElectionEnd() {
-        require(block.timestamp < electionEndTime, "Election has ended");
-        _;
-    }
-
-    modifier onlyAfterElectionEnd() {
-        require(
-            block.timestamp >= electionEndTime,
-            "Election is still ongoing"
-        );
-        _;
-    }
-
-    modifier onlyRegisteredVoter() {
-        require(voters[msg.sender].isRegistered, "Voter is not registered");
-        _;
-    }
-
-    modifier onlyVerifiedVoter() {
-        require(voters[msg.sender].isVerified, "Voter is not verified");
-        _;
-    }
-
+    // event VoterVerified(address indexed voter);
     constructor(uint256 _durationInMinutes) {
         owner = msg.sender;
         isAdmin[msg.sender] = true;
         electionEndTime = block.timestamp + (_durationInMinutes * 1 minutes);
     }
 
-    function addCandidate(
-        string memory _name,
-        string memory _image
-    ) public onlyOwner onlyAdmin onlyBeforeElectionEnd {
+    //  Voter Component
+    function generateUUID() internal view returns (string memory) {
+        // Use a simple deterministic algorithm for demonstration
+        // In a production environment, consider using an off-chain service for UUID generation
+        bytes32 result = keccak256(
+            abi.encodePacked(block.timestamp, msg.sender)
+        );
+        return Strings.toHexString(uint256(result), 32);
+    }
+
+    function bytes32ToString(
+        bytes32 _bytes32
+    ) public pure returns (string memory) {
+        uint8 i = 0;
+        while (i < 32 && _bytes32[i] != 0) {
+            i++;
+        }
+        bytes memory bytesArray = new bytes(i);
+        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
+            bytesArray[i] = _bytes32[i];
+        }
+        return string(bytesArray);
+    }
+
+    function addVoter(string memory _name, string memory _idCard) public {
+        require(!voters[_idCard].isRegistered, "Voter is already registered");
+
+        string memory uuid = generateUUID();
+        voters[_idCard].id = uuid;
+        voters[_idCard].name = _name;
+        voters[_idCard].idCard = _idCard;
+        voters[_idCard].account = msg.sender;
+        voters[_idCard].isRegistered = true;
+        getIdCard[uuid].idcard = _idCard;
+        registeredIdCard.push(_idCard);
+        emit VoterRegistered(msg.sender, _name, _idCard, uuid);
+    }
+
+    function fetchVoters() external view returns (string[][] memory) {
+        uint numVoters = registeredIdCard.length;
+        if (numVoters == 0) {
+            // Return an empty array if there are no registered voters
+            return new string[][](0);
+        }
+        string[][] memory votersArray = new string[][](numVoters);
+
+        for (uint i = 0; i < numVoters; i++) {
+            string memory voterIdCard = registeredIdCard[i];
+            votersArray[i] = new string[](4);
+            votersArray[i][0] = voters[voterIdCard].id;
+            votersArray[i][1] = voters[voterIdCard].name;
+            votersArray[i][2] = voters[voterIdCard].idCard;
+            votersArray[i][3] = voters[voterIdCard].isVerified
+                ? "Verified"
+                : "Not Verified";
+            votersArray[i][3] = voters[voterIdCard].isRegistered
+                ? "Registered"
+                : "Not Registered";
+        }
+
+        return votersArray;
+    }
+
+    function getVoterById(
+        string memory voterId
+    )
+        external
+        view
+        returns (string memory, string memory, string memory, bool, bool)
+    {
+        string memory _idCard = getIdCard[voterId].idcard;
+        require(voters[_idCard].isRegistered, "Voter not found");
+        return (
+            voters[_idCard].id,
+            voters[_idCard].name,
+            voters[_idCard].idCard,
+            voters[_idCard].isVerified,
+            voters[_idCard].isRegistered
+        );
+    }
+
+    function deleteVoterById(string memory voterId) public {
+        string memory _idCard = getIdCard[voterId].idcard;
+        require(voters[_idCard].isRegistered, "Voter not found");
+        delete voters[_idCard];
+        emit VoterDeleted(voterId);
+    }
+
+    event VoterDeleted(string indexed voterId);
+
+    function updateVoter(string memory uuid, string memory _newName) public {
+        string memory _idCard = getIdCard[uuid].idcard;
+        require(voters[_idCard].isRegistered, "Voter not found");
+        // require(msg.sender == voters[_idCard].account || isAdmin[msg.sender], "Unauthorized");
+        voters[_idCard].name = _newName;
+
+        // Emit an event or perform any other necessary actions
+        emit VoterUpdated(msg.sender, _idCard, _newName);
+    }
+
+    event VoterUpdated(
+        address indexed updater,
+        string indexed idCard,
+        string newName
+    );
+
+    function verifyVoter(string memory uuid) public {
+        string memory _idCard = getIdCard[uuid].idcard;
+        require(voters[_idCard].isRegistered, "Voter not found");
+        // require(msg.sender == voters[_idCard].account || isAdmin[msg.sender], "Unauthorized");
+        voters[_idCard].isVerified = true;
+
+        // Emit an event or perform any other necessary actions
+        emit VoterVerify(msg.sender, _idCard);
+    }
+
+    event VoterVerify(address indexed updater, string indexed idCard);
+
+    // End Voter Component
+
+    // Candidate Component
+    function addCandidate(string memory _name, string memory _image) public {
         candidates.push(Candidate({name: _name, image: _image, voteCount: 0}));
     }
 
-    function registerVoter(
-        string memory _name,
-        string memory _idCard
-    ) public onlyBeforeElectionEnd {
+    function fetchCandidates() external view returns (Candidate[] memory) {
+        uint numCandidates = candidates.length;
+
+        // Return an empty array if there are no candidates
+        if (numCandidates == 0) {
+            return new Candidate[](0);
+        }
+
+        Candidate[] memory candidatesArray = new Candidate[](numCandidates);
+
+        for (uint i = 0; i < numCandidates; i++) {
+            candidatesArray[i] = candidates[i];
+            // candidatesArray[i] = candidates[i];
+        }
+        return candidatesArray;
+    }
+
+    function deleteCandidate(uint candidateIndex) public {
+        require(candidateIndex < candidates.length, "Invalid candidate index");
+
+        // You can add additional conditions or permissions if needed
+
+        delete candidates[candidateIndex];
+
+        // Emit an event or perform any other necessary actions
+        emit CandidateDeleted(candidateIndex);
+    }
+
+    event CandidateDeleted(uint indexed candidateIndex);
+
+    function updateCandidate(
+        uint candidateIndex,
+        string memory _newName,
+        string memory _newImage
+    ) public {
+        require(candidateIndex < candidates.length, "Invalid candidate index");
+
+        // You can add additional conditions or permissions if needed
+
+        Candidate storage candidate = candidates[candidateIndex];
+        candidate.name = _newName;
+        candidate.image = _newImage;
+
+        // Emit an event or perform any other necessary actions
+        emit CandidateUpdated(msg.sender, candidateIndex, _newName, _newImage);
+    }
+
+    event CandidateUpdated(
+        address indexed updater,
+        uint indexed candidateIndex,
+        string newName,
+        string newImage
+    );
+
+    function vote(uint candidateIndex, string memory _uuid) public {
+        string memory _idCard = getIdCard[_uuid].idcard;
         require(
-            !voters[msg.sender].isRegistered,
-            "Voter is already registered"
+            voters[_idCard].isRegistered,
+            "Only registered voters can vote"
         );
-        voters[msg.sender].name = _name;
-        voters[msg.sender].idCard = _idCard;
-        voters[msg.sender].account = msg.sender;
-        voters[msg.sender].isRegistered = true;
-        registeredAddress.push(msg.sender);
-        emit VoterRegistered(msg.sender, _name, _idCard);
+        require(!voted[_idCard], "Voter has already cast a vote");
+        require(candidateIndex < candidates.length, "Invalid candidate index");
+
+        // You can add additional conditions or permissions if needed
+
+        candidates[candidateIndex].voteCount++;
+        voted[_idCard] = true;
+        voteTimestamp[_idCard] = block.timestamp;
+
+        // Emit an event or perform any other necessary actions
+        emit Voted(msg.sender, _idCard, candidateIndex);
     }
 
-    function getVoterByName(
-        string memory _name
-    ) public view returns (Voter memory) {
-        for (uint256 i = 0; i < registeredAddress.length; i++) {
-            address _address = registeredAddress[i];
-            if (
-                keccak256(abi.encodePacked(voters[_address].name)) ==
-                keccak256(abi.encodePacked(_name))
-            ) {
-                return voters[_address];
-            }
-        }
-
-        revert("Voter not found");
-    }
-
-    function verifyVoter(
-        address _voterAddress
-    ) public onlyOwner onlyAdmin onlyBeforeElectionEnd {
-        require(voters[_voterAddress].isRegistered, "Voter is not registered");
-        require(!voters[_voterAddress].isVerified, "Voter is already verified");
-        voters[_voterAddress].isVerified = true;
-        emit VoterVerified(_voterAddress);
-    }
-
-    function getAllVoters()
-        public
-        view
-        onlyOwner
-        onlyAdmin
-        returns (Voter[] memory)
-    {
-        uint256 totalRegistered = registeredAddress.length;
-        Voter[] memory allVoters = new Voter[](totalRegistered);
-        for (uint256 i = 0; i < totalRegistered; i++) {
-            address _address = registeredAddress[i];
-            allVoters[i] = voters[_address];
-        }
-        return allVoters;
-    }
-
-    function vote(
-        uint256 _candidateIndex
-    ) public onlyRegisteredVoter onlyVerifiedVoter onlyBeforeElectionEnd {
-        require(!voted[msg.sender], "You have already voted");
-        require(_candidateIndex < candidates.length, "Invalid candidate index");
-
-        voted[msg.sender] = true;
-        voteTimestamp[msg.sender] = block.timestamp;
-        candidates[_candidateIndex].voteCount++;
-
-        emit Voted(msg.sender, _candidateIndex);
-    }
-
-    function getAllCandidates() public view returns (Candidate[] memory) {
-        return candidates;
-    }
-
-    function getAllVotes() public view returns (uint256[] memory) {
-        uint256[] memory votes = new uint256[](candidates.length);
-        for (uint256 i = 0; i < candidates.length; i++) {
-            votes[i] = candidates[i].voteCount;
-        }
-        return votes;
-    }
-
-    function getStatusVote()
-        public
-        view
-        returns (bool hasVoted, uint256 voteTimestamp_)
-    {
-        return (voted[msg.sender], voteTimestamp[msg.sender]);
-    }
-
-    function modifyRemainingTime(uint256 _additionalMinutes) public {
-        electionEndTime += _additionalMinutes * 1 minutes;
-    }
-
-    function getRemainingTime() public view returns (uint256 remainingTime) {
-        if (block.timestamp < electionEndTime) {
-            remainingTime = electionEndTime - block.timestamp;
-        }
-    }
+    event Voted(
+        address indexed electionAccount,
+        string indexed idCard,
+        uint indexed candidateIndex
+    );
 }
