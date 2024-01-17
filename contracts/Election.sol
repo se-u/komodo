@@ -8,7 +8,7 @@ contract Election {
     struct Candidate {
         string name;
         string image;
-        uint voteCount;
+        uint256 voteCount;
     }
 
     struct Voter {
@@ -65,7 +65,7 @@ contract Election {
         _;
     }
 
-    constructor(uint _durationInMinutes) {
+    constructor(uint256 _durationInMinutes) {
         owner = msg.sender;
         isAdmin[msg.sender] = true;
         electionEndTime = block.timestamp + (_durationInMinutes * 1 minutes);
@@ -97,7 +97,7 @@ contract Election {
     function getVoterByName(
         string memory _name
     ) public view returns (Voter memory) {
-        for (uint i = 0; i < registeredAddress.length; i++) {
+        for (uint256 i = 0; i < registeredAddress.length; i++) {
             address _address = registeredAddress[i];
             if (
                 keccak256(abi.encodePacked(voters[_address].name)) ==
@@ -136,7 +136,7 @@ contract Election {
     }
 
     function vote(
-        uint _candidateIndex
+        uint256 _candidateIndex
     ) public onlyRegisteredVoter onlyVerifiedVoter onlyBeforeElectionEnd {
         require(!voted[msg.sender], "You have already voted");
         require(_candidateIndex < candidates.length, "Invalid candidate index");
@@ -152,9 +152,9 @@ contract Election {
         return candidates;
     }
 
-    function getAllVotes() public view returns (uint[] memory) {
-        uint[] memory votes = new uint[](candidates.length);
-        for (uint i = 0; i < candidates.length; i++) {
+    function getAllVotes() public view returns (uint256[] memory) {
+        uint256[] memory votes = new uint256[](candidates.length);
+        for (uint256 i = 0; i < candidates.length; i++) {
             votes[i] = candidates[i].voteCount;
         }
         return votes;
@@ -163,12 +163,16 @@ contract Election {
     function getStatusVote()
         public
         view
-        returns (bool hasVoted, uint voteTimestamp_)
+        returns (bool hasVoted, uint256 voteTimestamp_)
     {
         return (voted[msg.sender], voteTimestamp[msg.sender]);
     }
 
-    function getRemainingTime() public view returns (uint remainingTime) {
+    function modifyRemainingTime(uint256 _additionalMinutes) public {
+        electionEndTime += _additionalMinutes * 1 minutes;
+    }
+
+    function getRemainingTime() public view returns (uint256 remainingTime) {
         if (block.timestamp < electionEndTime) {
             remainingTime = electionEndTime - block.timestamp;
         }

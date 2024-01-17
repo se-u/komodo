@@ -27,13 +27,9 @@ export async function createAccount(formData: FormData) {
     idCard: formData.get("idCard"),
   };
 
-  console.log("Call it");
-
   const contract = await connectToMetaMask();
-  console.log(contract);
   if (contract) {
     try {
-      console.log("disini");
       const tx = await contract.registerVoter(name, idCard);
       const receipt = await tx.wait();
       console.log(`receipt: ${receipt}`);
@@ -57,8 +53,4 @@ export async function verifyVoter(voterAddress: string) {
       console.log(`failed to register: ${error.message}`);
     }
   }
-  console.log(voterAddress);
-  console.log("terpanggil");
-  // revalidatePath("/dasboard/voter");
-  // redirect("/validate/status");
 }
