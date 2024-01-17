@@ -2,7 +2,7 @@
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { ContractRunner, ethers } from "ethers";
 
-const CONTRACT = "0xAe134d2896b21D99C000B442704de133D34cC151";
+const CONTRACT = "0xb49Ca2F2522445B1545388EeC594a446a6E7DE3f";
 
 export async function connectToMetaMask() {
   // Check if MetaMask is installed
@@ -65,7 +65,11 @@ export async function fetchCredential() {
 }
 
 export async function fetchVoters() {
-  const contract = await connectToMetaMask();
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+
   if (contract) {
     try {
       const voters = await contract.getAllVoters();
@@ -94,7 +98,9 @@ export async function fetchVoters() {
 }
 
 export async function fetchRemainingTime() {
-  const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
   if (contract) {
     try {
       console.log("terpanggil time");
@@ -108,6 +114,18 @@ export async function fetchRemainingTime() {
   // console.log(voterAddress);
   // revalidatePath("/dasboard/voter");
   // redirect("/validate/status");
+}
+
+export async function updateRemainingTime(minute: number) {
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+
+  if (contract) {
+    const tx = await contract.modifyRemainingTime(minute);
+    await tx.wait();
+    // console.log(`receipt: ${tx}`);
+  }
 }
 
 export async function pushCanditate(signer: ContractRunner) {

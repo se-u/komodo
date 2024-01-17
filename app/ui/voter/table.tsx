@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { UpdateInvoice, DeleteInvoice } from "@/app/ui/buttons";
+import { fetchVoters } from "@/app/lib/data";
+import { CheckBadgeIcon } from "@heroicons/react/24/outline";
 // import InvoiceStatus from "@/app/ui/invoices/status";
 // import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 // import { fetchFilteredInvoices } from "@/app/lib/data";
@@ -9,40 +11,34 @@ export default async function InvoicesTable({
 }: {
   currentPage: number;
 }) {
-  const invoices = [
-    { id: 1, name: "john doe", image_url: "/logo.png", email: "asfas@ga.c" },
-    { id: 1, name: "john doe", image_url: "/logo.png", email: "asfas@ga.c" },
-    { id: 1, name: "john doe", image_url: "/logo.png", email: "asfas@ga.c" },
-    { id: 1, name: "john doe", image_url: "/logo.png", email: "asfas@ga.c" },
-    { id: 1, name: "john doe", image_url: "/logo.png", email: "asfas@ga.c" },
-    { id: 1, name: "john doe", image_url: "/logo.png", email: "asfas@ga.c" },
-  ];
+  const voters = await fetchVoters();
+  // console.log(result);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {invoices?.map((invoice) => (
+            {voters?.map((voter) => (
               <div
-                key={invoice.id}
+                key={voter.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={invoice.image_url}
+                        src={voter.image_url}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        alt={`${voter.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <p>{voter.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
+                    <p className="text-sm text-gray-500">{voter.email}</p>
                   </div>
-                  {/* <InvoiceStatus status={invoice.status} /> */}
+                  {/* <voterStatus status={invoice.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -52,8 +48,8 @@ export default async function InvoicesTable({
                     {/* <p>{formatDateToLocal(invoice.date)}</p> */}
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
+                    <UpdateInvoice id={voter.id} />
+                    <DeleteInvoice id={voter.id} />
                   </div>
                 </div>
               </div>
@@ -63,59 +59,47 @@ export default async function InvoicesTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  NIK
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
                 </th>
+
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {voters?.map((voter) => (
                 <tr
-                  key={invoice.id}
+                  key={voter.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                      <p>{voter.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {voter.idCard}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatCurrency(invoice.amount)} */}
+                    <span className="btn">
+                      {voter.isVerified ? "Verified" : " Not Verified"}
+                      <div className="badge">
+                        <CheckBadgeIcon className="bg-white text-white" />
+                      </div>
+                    </span>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(invoice.date)} */}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {/* <InvoiceStatus status={invoice.status} /> */}
-                  </td>
+
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {/* <UpdateInvoice id={invoice.id} /> */}
-                      {/* <DeleteInvoice id={invoice.id} /> */}
+                      <UpdateInvoice id={voter.id} />
+                      <DeleteInvoice id={voter.id} />
                     </div>
                   </td>
                 </tr>
