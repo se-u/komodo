@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../button";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 
+import { fetchRemainingTime } from "@/app/lib/data";
+import { updateRemainingTime } from "@/app/lib/data";
+
 function generateMinute(startDate: Date, endDate: Date) {
   const selisihWaktu = endDate - startDate;
   const selisihMenit = Math.floor(selisihWaktu / (1000 * 60));
@@ -15,11 +18,17 @@ export default function SettingsForm() {
     const startDate: Date = new Date();
     const endDate: Date = e.target.valueAsDate!;
     const dateInMinute = generateMinute(startDate, endDate);
-    console.log(dateInMinute);
+      setMinute(dateInMinute);
   };
-
+  
+  
   useEffect(() => {
-    console.log("asf");
+    const remainingTime = async () => {
+      const time = await fetchRemainingTime();
+      // const update = updateRemainingTime(1);
+      console.log(time);
+    };
+    remainingTime();
   });
 
   return (
