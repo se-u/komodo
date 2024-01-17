@@ -20,6 +20,7 @@ const config: Config = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+
   theme: {
     extend: {
       backgroundImage: {
@@ -29,6 +30,9 @@ const config: Config = {
       },
     },
   },
+  // daisyui: {
+  //   themes: ["light"],
+  // },
   // plugins: [],
   plugins: [daisyui],
 };

@@ -1,8 +1,10 @@
+"use server";
 // lib/data/connectMetaMask.js
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { ContractRunner, ethers } from "ethers";
+import { revalidatePath, unstable_noStore } from "next/cache";
 
-const CONTRACT = "0xb49Ca2F2522445B1545388EeC594a446a6E7DE3f";
+const CONTRACT = "0x83906736dab595f24f01EE23265fbAdFa1aD1761";
 
 export async function connectToMetaMask() {
   // Check if MetaMask is installed
@@ -64,7 +66,16 @@ export async function fetchCredential() {
   }
 }
 
+export async function getContract() {
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+  return contract;
+}
+
 export async function fetchVoters() {
+  unstable_noStore();
+
   // const contract = await connectToMetaMask();
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
   const signer = await provider.getSigner();
@@ -72,29 +83,83 @@ export async function fetchVoters() {
 
   if (contract) {
     try {
-      const voters = await contract.getAllVoters();
+      const voters = await contract.fetchVoters();
       const votersFormatted = voters.map((voter, index) => {
         return {
           index: index,
-          isRegistered: voter[0],
-          isVerified: voter[1],
-          name: voter[2],
-          idCard: voter[3],
-          account: voter[4],
+          id: voter[0],
+          name: voter[1],
+          idCard: voter[2],
+          isVerified: true ? voter[3] === "Verified" : false,
+          isRegistered: true ? voter[4] === "Registered" : false,
+          // isRegistered: voter[3],
+          // account: voter[4],
         };
       });
       return votersFormatted;
-      // credential.map((index) => {
-      //   return {
-      //     isRegistered: credential[index],
-      //     img: credential[index],
-      //     voteCount: ethers.toNumber(candidate.voteCount),
-      //   };
-      // });
     } catch (error) {
-      return { message: "error" };
+      return { message: `error: ${error}` };
     }
   }
+}
+
+export async function fetchVotersById(id: string) {
+  unstable_noStore();
+
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const voter = await contract.getVoterById(id);
+
+      return {
+        id: voter[0],
+        name: voter[1],
+        idCard: voter[2],
+        isVerified: true ? voter[3] === "Verified" : false,
+        isRegistered: true ? voter[4] === "Registered" : false,
+        // isRegistered: voter[3],
+        // account: voter[4],
+      };
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+}
+
+export async function deleteVoterById(id: string) {
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const voters = await contract.deleteVoterById(id);
+      voters.wait();
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+}
+
+export async function verifyVoterById(id: string) {
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+  if (contract) {
+    try {
+      console.log("disini");
+      const voters = await contract.verifyVoter(id);
+      voters.wait();
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+  revalidatePath("/dashboard/voter");
 }
 
 export async function fetchRemainingTime() {

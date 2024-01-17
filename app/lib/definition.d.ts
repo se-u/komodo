@@ -7,6 +7,7 @@ declare global {
 }
 
 export type Voter = {
+  id: string;
   index: number;
   isRegistered: Boolean;
   isVerified: Boolean;

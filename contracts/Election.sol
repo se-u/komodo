@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 // Import an external library for generating UUIDs
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -101,14 +101,14 @@ contract Election {
 
         for (uint i = 0; i < numVoters; i++) {
             string memory voterIdCard = registeredIdCard[i];
-            votersArray[i] = new string[](4);
+            votersArray[i] = new string[](5);
             votersArray[i][0] = voters[voterIdCard].id;
             votersArray[i][1] = voters[voterIdCard].name;
             votersArray[i][2] = voters[voterIdCard].idCard;
             votersArray[i][3] = voters[voterIdCard].isVerified
                 ? "Verified"
                 : "Not Verified";
-            votersArray[i][3] = voters[voterIdCard].isRegistered
+            votersArray[i][4] = voters[voterIdCard].isRegistered
                 ? "Registered"
                 : "Not Registered";
         }
@@ -137,7 +137,31 @@ contract Election {
     function deleteVoterById(string memory voterId) public {
         string memory _idCard = getIdCard[voterId].idcard;
         require(voters[_idCard].isRegistered, "Voter not found");
+
+        // Find the index of the voter in the registeredIdCard array
+        uint indexToDelete;
+        for (uint i = 0; i < registeredIdCard.length; i++) {
+            if (
+                keccak256(bytes(registeredIdCard[i])) ==
+                keccak256(bytes(_idCard))
+            ) {
+                indexToDelete = i;
+                break;
+            }
+        }
+
+        // Remove the voter from the array
+        if (indexToDelete < registeredIdCard.length - 1) {
+            registeredIdCard[indexToDelete] = registeredIdCard[
+                registeredIdCard.length - 1
+            ];
+        }
+        registeredIdCard.pop();
+
+        // Delete the voter from the mapping
         delete voters[_idCard];
+
+        // Emit an event or perform any other necessary actions
         emit VoterDeleted(voterId);
     }
 

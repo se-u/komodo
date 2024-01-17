@@ -1,5 +1,8 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { deleteVoterById, getContract, verifyVoterById } from "../lib/data";
+import { revalidatePath } from "next/cache";
+import { ShieldCheckIcon } from "@heroicons/react/16/solid";
 
 export function CreateVoter() {
   return (
@@ -13,10 +16,10 @@ export function CreateVoter() {
   );
 }
 
-export function UpdateInvoice({ id }: { id: string }) {
+export function UpdateVoter({ id }: { id: string }) {
   return (
     <Link
-      href="/dashboard/invoices"
+      href={`/dashboard/voter/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -24,13 +27,38 @@ export function UpdateInvoice({ id }: { id: string }) {
   );
 }
 
-export function DeleteInvoice({ id }: { id: string }) {
+export async function VerifyVoter({
+  id,
+  isVerified,
+}: {
+  id: string;
+  isVerified: boolean;
+}) {
+  const verifyVoter = verifyVoterById.bind(null, id);
   return (
     <>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
+      {!isVerified ? (
+        <form action={verifyVoter}>
+          <button disabled className="rounded-md border p-2 hover:bg-gray-100">
+            <span className="sr-only">Verify</span>
+            <ShieldCheckIcon className="w-5" />
+          </button>
+        </form>
+      ) : null}
+    </>
+  );
+}
+
+export async function DeleteVoter({ id }: { id: string }) {
+  const deleteVoter = deleteVoterById.bind(null, id);
+  return (
+    <>
+      <form action={deleteVoter}>
+        <button className="rounded-md border p-2 hover:bg-gray-100">
+          <span className="sr-only">Delete</span>
+          <TrashIcon className="w-5" />
+        </button>
+      </form>
     </>
   );
 }
