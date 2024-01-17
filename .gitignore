@@ -5,9 +5,7 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-/artifacts
-artifacts
-/.env
+artifacts/*
 .env
 # testing
 /coverage
@@ -15,6 +13,8 @@ artifacts
 # next.jst
 /.next/
 /out/
+
+/.idea/
 
 # production
 /build

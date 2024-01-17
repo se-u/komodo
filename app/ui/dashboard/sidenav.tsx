@@ -1,5 +1,7 @@
 import Link from "next/link";
 import NavLinks from "@/app/ui/dashboard/nav-links";
+import Image from "next/image";
+import { lusitana } from "../fonts";
 // import AcmeLogo from '@/app/ui/acme-logo';
 // import { PowerIcon } from '@heroicons/react/24/outline';
 // import { signOut } from '@/auth';
@@ -11,7 +13,26 @@ export default function SideNav() {
         className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
         href="/"
       >
-        <div className="w-32 text-white md:w-40">{/* <AcmeLogo /> */}</div>
+        <div className="w-32 text-white md:w-40">
+          <div
+            className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
+          >
+            <div className="w-32 text-white md:w-40">
+              <div
+                className={`flex flex-row items-center leading-none text-white`}
+              >
+                <Image
+                  width={200}
+                  height={200}
+                  className="h-12 w-12"
+                  src="/logologin.png"
+                  alt="logo"
+                />{" "}
+                <p className="text-[22px] mx-2">Gerbang Suara</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <NavLinks />
