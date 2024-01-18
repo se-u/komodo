@@ -1,5 +1,5 @@
 "use client";
-import { fetchVotersById } from "@/app/lib/data";
+import { fetchCandidates, fetchVotersById } from "@/app/lib/data";
 import Ballot from "@/app/ui/ballot/ballot";
 import { useEffect, useState } from "react";
 const VerificationLoading = () => {
@@ -52,5 +52,7 @@ export default function Page({ params }: { params: { id: string } }) {
     return () => clearInterval(intervalId);
   }, [params.id]);
 
-  return <>{voter?.isVerified ? <Ballot /> : <VerificationLoading />}</>;
+  return (
+    <>{voter?.isVerified ? <Ballot uuid={id} /> : <VerificationLoading />}</>
+  );
 }

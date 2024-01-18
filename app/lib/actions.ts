@@ -1,17 +1,83 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { ethers } from "ethers";
-
-// import { connectToMetaMask } from "./data";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
-import Web3, { ContractExecutionError } from "web3";
+import Web3 from "web3";
 import { deployedAddress } from "./utils";
 
 export async function navigateBallot(id: string) {
   redirect(`/ballot/${id}`);
+}
+
+export async function addCandidate(formData: FormData) {
+  const { name, image } = {
+    name: formData.get("name"),
+    image: formData.get("image"),
+  };
+  // Set up a connection to the Ethereum network
+  const web3: Web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+
+  // Create a new contract object using the ABI and bytecode
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  // myContract.handleRevert = true;
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const defaultAccount: string = providersAccounts[0];
+
+  try {
+    const receipt: any = await myContract.methods
+      .addCandidate(name, image)
+      .send({
+        from: defaultAccount,
+        gas: 1000000,
+        gasPrice: "10000000000",
+      });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    return true;
+  } catch (error) {
+    // console.error({error});
+    const errorMessage = error.toJSON().innerError.toJSON().message;
+    return { error: errorMessage };
+  }
+}
+
+export async function updateCandidate(formData: FormData) {
+  const { index, name, image } = {
+    index: Number(formData.get("index")),
+    name: formData.get("name"),
+    image: formData.get("image"),
+  };
+  // Set up a connection to the Ethereum network
+  const web3: Web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+
+  // Create a new contract object using the ABI and bytecode
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  // myContract.handleRevert = true;
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const defaultAccount: string = providersAccounts[0];
+
+  try {
+    const receipt: any = await myContract.methods
+      .updateCandidate(index, name, image)
+      .send({
+        from: defaultAccount,
+        gas: 1000000,
+        gasPrice: "10000000000",
+      });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    return receipt.events.CandidateUpdated.returnValues;
+  } catch (error) {
+    // console.error({error});
+    const errorMessage = error.toJSON().innerError.toJSON().message;
+    return { error: errorMessage };
+  }
 }
 
 export async function validateVoter(formData: FormData) {
@@ -43,6 +109,38 @@ export async function validateVoter(formData: FormData) {
     // console.error({error});
     const errorMessage = error.toJSON().innerError.toJSON().message;
     return { error: errorMessage };
+  }
+}
+
+export async function voteCandidate(formData: FormData) {
+  const { index, uuid } = {
+    index: Number(formData.get("card-option")),
+    uuid: formData.get("uuid"),
+  };
+  // Set up a connection to the Ethereum network
+  const web3: Web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+
+  // Create a new contract object using the ABI and bytecode
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  // myContract.handleRevert = true;
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const defaultAccount: string = providersAccounts[0];
+
+  try {
+    const receipt: any = await myContract.methods.vote(index, uuid).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    return receipt.events.Voted.returnValues;
+  } catch (error) {
+    // console.error({error});
+    // const errorMessage = error.toJSON().innerError.toJSON().message;
+    return error;
   }
 }
 

@@ -159,11 +159,45 @@ export async function updateRemainingTime(minute: number) {
   }
 }
 
-// export async function pushCanditate(signer: ContractRunner) {
-//   const contract = await connectToMetaMask();
-//   if (contract) {
-//     const tx = await contract.addCandidate("Jack", "gambar-jack");
-//     const receipt = await tx.wait();
-//     // console.log(`receipt: ${receipt}`);
-//   }
-// }
+export async function fetchCandidates() {
+  unstable_noStore();
+
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const candidates = await contract.fetchCandidates();
+      const candidatesFormated = candidates.map((candidate, index) => {
+        return {
+          index: index,
+          name: candidate[0],
+          image: candidate[1],
+          count: candidate[2],
+        };
+      });
+      return candidatesFormated;
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+}
+
+export async function deleteCandidate(index: number) {
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const voters = await contract.deleteCandidate(index);
+      voters.wait();
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+  // revalidatePath("/dashboard/voter");
+}
