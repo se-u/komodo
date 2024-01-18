@@ -7,8 +7,12 @@ import { ethers } from "ethers";
 // import { connectToMetaMask } from "./data";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
-import Web3 from "web3";
+import Web3, { ContractExecutionError } from "web3";
 import { deployedAddress } from "./utils";
+
+export async function navigateBallot(id: string) {
+  redirect(`/ballot/${id}`);
+}
 
 export async function validateVoter(formData: FormData) {
   const { name, idCard } = {
@@ -22,35 +26,23 @@ export async function validateVoter(formData: FormData) {
 
   // Create a new contract object using the ABI and bytecode
   const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  myContract.handleRevert = true;
+  // myContract.handleRevert = true;
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const defaultAccount: string = providersAccounts[0];
 
-  async function interact(): Promise<void> {
-    const providersAccounts: string[] = await web3.eth.getAccounts();
-    const defaultAccount: string = providersAccounts[0];
-
-    try {
-      const receipt: any = await myContract.methods
-        .addVoter(name, idCard)
-        .send({
-          from: defaultAccount,
-          gas: 1000000,
-          gasPrice: "10000000000",
-        });
-      console.log(myContract.events.VoterRegistered);
-      console.log("Transaction Hash: " + receipt.transactionHash);
-      return receipt.events.VoterRegistered.returnValues;
-
-      // Get the updated value of my number
-      // const myNumberUpdated: string = await myContract.methods.myNumber().call();
-      // console.log("my number updated value: " + myNumberUpdated);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  const tx = await interact();
-  console.log(tx);
-  if (tx.uuid !== undefined || tx.uuid !== null) {
-    redirect(`/ballot/${tx.uuid}/`);
+  try {
+    const receipt: any = await myContract.methods.addVoter(name, idCard).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    return receipt.events.VoterRegistered.returnValues;
+  } catch (error) {
+    // console.error({error});
+    const errorMessage = error.toJSON().innerError.toJSON().message;
+    return { error: errorMessage };
   }
 }
 
