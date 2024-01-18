@@ -31,9 +31,10 @@
 //   );
 // }
 
+'use client';
 import { Card } from "@/app/ui/dashboard/cards";
+import Chart from "@/app/ui/chart";
 // import { lusitana } from '@/app/ui/fonts';
-
 export default async function Page() {
   return (
     <main>
@@ -43,8 +44,12 @@ export default async function Page() {
         <Card title="Pending" value={13} type="pending" />
         <Card title="Total Invoices" value={14} type="invoices" />
         <Card title="Total Customers" value={15} type="customers" />
+
+              <Chart/>
+
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8"></div>
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+      </div>
     </main>
   );
 }
