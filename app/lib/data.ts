@@ -82,13 +82,12 @@ export async function fetchVotersById(id: string) {
       const voter = await contract.getVoterById(id);
 
       return {
-        id: voter[0],
-        name: voter[1],
-        idCard: voter[2],
-        isVerified: true ? voter[3] === "Verified" : false,
-        isRegistered: true ? voter[4] === "Registered" : false,
-        // isRegistered: voter[3],
-        // account: voter[4],
+        isRegistered: voter[0],
+        isVerified: voter[1],
+        id: voter[2],
+        name: voter[3],
+        idCard: voter[4],
+        account: voter[5],
       };
     } catch (error) {
       return { message: `error: ${error}` };
@@ -119,13 +118,13 @@ export async function verifyVoterById(id: string) {
   const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
   if (contract) {
     try {
-      console.log("disini");
       const voters = await contract.verifyVoter(id);
       voters.wait();
     } catch (error) {
       return { message: `error: ${error}` };
     }
   }
+  revalidatePath(`/ballot/${id}`);
   revalidatePath("/dashboard/voter");
 }
 

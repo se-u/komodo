@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ethers } from "ethers";
 
-import { connectToMetaMask } from "./data";
+// import { connectToMetaMask } from "./data";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
 import Web3 from "web3";
@@ -50,7 +50,7 @@ export async function validateVoter(formData: FormData) {
   const tx = await interact();
   console.log(tx);
   if (tx.uuid !== undefined || tx.uuid !== null) {
-    redirect(`/dashboard/voter/${tx.uuid}/edit`);
+    redirect(`/ballot/${tx.uuid}/`);
   }
 }
 

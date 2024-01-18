@@ -11,7 +11,6 @@ export default async function VoterTable({ query }: { query: string }) {
       voter.idCard.toLowerCase().includes(query.toLowerCase())
     );
   });
-  console.log(query);
   return (
     <>
       <div className="mt-6 flow-root">
