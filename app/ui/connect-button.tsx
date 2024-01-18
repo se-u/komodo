@@ -12,7 +12,7 @@ export async function ConnectButton() {
   useEffect(() => {
     const handleConnect = async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const connect = await connectToMetaMask();
+      // const connect = await connectToMetaMask(); eror
       setProxy(true);
     };
 
