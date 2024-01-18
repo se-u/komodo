@@ -1,10 +1,10 @@
+import { validateVoter } from "@/app/lib/actions";
 import { Button } from "../button";
 import { CreditCardIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import { addVoter } from "@/app/lib/actions";
 
 export default function Form() {
   return (
-    <form action={addVoter}>
+    <form action={validateVoter}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Nama  */}
         <div className="mb-4">

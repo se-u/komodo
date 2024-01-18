@@ -7,63 +7,51 @@ import { ethers } from "ethers";
 import { connectToMetaMask } from "./data";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
-
-const CONTRACT = "0x83906736dab595f24f01EE23265fbAdFa1aD1761";
-
-export type State = {
-  errors?: {
-    name?: string[];
-    idCard?: string[];
-  };
-  message?: string | null;
-};
+import Web3 from "web3";
+import { deployedAddress } from "./utils";
 
 export async function validateVoter(formData: FormData) {
   const { name, idCard } = {
     name: formData.get("name"),
     idCard: formData.get("idCard"),
   };
+  // Set up a connection to the Ethereum network
+  const web3: Web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
 
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+  // Create a new contract object using the ABI and bytecode
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  myContract.handleRevert = true;
 
-  if (contract) {
+  async function interact(): Promise<void> {
+    const providersAccounts: string[] = await web3.eth.getAccounts();
+    const defaultAccount: string = providersAccounts[0];
+
     try {
-      const tx = await contract.addVoter(name, idCard);
-      const receipt = await tx.wait();
+      const receipt: any = await myContract.methods
+        .addVoter(name, idCard)
+        .send({
+          from: defaultAccount,
+          gas: 1000000,
+          gasPrice: "10000000000",
+        });
+      console.log(myContract.events.VoterRegistered);
+      console.log("Transaction Hash: " + receipt.transactionHash);
+      return receipt.events.VoterRegistered.returnValues;
+
+      // Get the updated value of my number
+      // const myNumberUpdated: string = await myContract.methods.myNumber().call();
+      // console.log("my number updated value: " + myNumberUpdated);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  revalidatePath("/check/status");
-  redirect("/check/status");
-}
-
-export async function addVoter(formData: FormData) {
-  const { name, idCard } = {
-    name: formData.get("name"),
-    idCard: formData.get("idCard"),
-  };
-
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const tx = await contract.addVoter(name, idCard);
-      const receipt = await tx.wait();
-      console.log(`receipt: ${receipt}`);
-    } catch (error) {
-      console.log(error);
-    }
+  const tx = await interact();
+  console.log(tx);
+  if (tx.uuid !== undefined || tx.uuid !== null) {
+    redirect(`/dashboard/voter/${tx.uuid}/edit`);
   }
-  revalidatePath("/dashboard/voter");
-  redirect("/dashboard/voter");
 }
 
 export async function updateVoter(formData: FormData) {
@@ -72,10 +60,9 @@ export async function updateVoter(formData: FormData) {
     newName: formData.get("name"),
   };
 
-  // const contract = await connectToMetaMask();
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
   const signer = await provider.getSigner();
-  const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
 
   if (contract) {
     try {
@@ -88,17 +75,4 @@ export async function updateVoter(formData: FormData) {
   }
   revalidatePath("/dasboard/voter");
   redirect("/dashboard/voter/");
-}
-
-export async function verifyVoter(voterAddress: string) {
-  const contract = await connectToMetaMask();
-  if (contract) {
-    try {
-      const tx = await contract.verifyVoter(voterAddress);
-      // const receipt = await tx.wait();
-      console.log(`receipt: ${tx}`);
-    } catch (error) {
-      console.log(`failed to register: ${error.message}`);
-    }
-  }
 }
