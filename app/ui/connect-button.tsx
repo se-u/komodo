@@ -12,7 +12,7 @@ export async function ConnectButton() {
   useEffect(() => {
     const handleConnect = async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // const connect = await connectToMetaMask(); eror
+      // const connect = await connectToMetaMask();
       setProxy(true);
     };
 
@@ -24,13 +24,13 @@ export async function ConnectButton() {
   }
 
   return (
-    <>
-      <GuideCard />
-      <div className="w-40 h-20 mx-auto p-5">
-        <Link href="/check">
-          <button className="btn glass ">Validasi Data</button>
-        </Link>
-      </div>
-    </>
+      <>
+        <GuideCard />
+        <div className="w-40 h-20 mx-auto p-5">
+          <Link href="/check">
+            <button className="btn glass ">Validasi Data</button>
+          </Link>
+        </div>
+      </>
   );
 }

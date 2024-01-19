@@ -39,6 +39,7 @@
     "hardhat": "^2.19.4",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.7.0",
     "typescript": "^5"
   }
 }

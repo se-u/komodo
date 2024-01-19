@@ -31,4 +31,5 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+// Change This
 export const deployedAddress = "0xE35b64499D545E1FC33A50c761412bb536a615F1";

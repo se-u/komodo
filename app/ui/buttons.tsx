@@ -39,7 +39,7 @@ export async function VerifyVoter({
     <>
       {!isVerified ? (
         <form action={verifyVoter}>
-          <button disabled className="rounded-md border p-2 hover:bg-gray-100">
+          <button className="rounded-md border p-2 hover:bg-gray-100">
             <span className="sr-only">Verify</span>
             <ShieldCheckIcon className="w-5" />
           </button>

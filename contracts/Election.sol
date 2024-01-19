@@ -77,7 +77,10 @@ contract Election {
         return string(bytesArray);
     }
 
-    function addVoter(string memory _name, string memory _idCard) public {
+    function addVoter(
+        string memory _name,
+        string memory _idCard
+    ) public returns (string memory) {
         require(!voters[_idCard].isRegistered, "Voter is already registered");
 
         string memory uuid = generateUUID();
@@ -89,6 +92,7 @@ contract Election {
         getIdCard[uuid].idcard = _idCard;
         registeredIdCard.push(_idCard);
         emit VoterRegistered(msg.sender, _name, _idCard, uuid);
+        return uuid;
     }
 
     function fetchVoters() external view returns (string[][] memory) {
@@ -118,20 +122,10 @@ contract Election {
 
     function getVoterById(
         string memory voterId
-    )
-        external
-        view
-        returns (string memory, string memory, string memory, bool, bool)
-    {
+    ) external view returns (Voter memory) {
         string memory _idCard = getIdCard[voterId].idcard;
-        require(voters[_idCard].isRegistered, "Voter not found");
-        return (
-            voters[_idCard].id,
-            voters[_idCard].name,
-            voters[_idCard].idCard,
-            voters[_idCard].isVerified,
-            voters[_idCard].isRegistered
-        );
+        // require(voters[_idCard].isRegistered, "Voter not found");
+        return voters[_idCard];
     }
 
     function deleteVoterById(string memory voterId) public {
