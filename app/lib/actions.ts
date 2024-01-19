@@ -107,8 +107,8 @@ export async function validateVoter(formData: FormData) {
     return receipt.events.VoterRegistered.returnValues;
   } catch (error) {
     // console.error({error});
-    // const errorMessage = error.toJSON().innerError.toJSON().message;
-    const errorMessage = error;
+    const errorMessage = error.toJSON().innerError.toJSON().message;
+    // const errorMessage = error;
     return { error: errorMessage };
   }
 }
