@@ -6,7 +6,7 @@
 .pnp.js
 .yarn/install-state.gz
 artifacts/
-/app/lib/utils.ts
+app/lib/utils.ts
 cache/
 .env
 # testing
