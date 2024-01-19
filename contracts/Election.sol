@@ -6,9 +6,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Election {
     // using Strings for uint256;
-
-    address public owner;
-    uint public electionEndTime;
+    bool public isVoteActive;
 
     struct Candidate {
         string name;
@@ -29,6 +27,38 @@ contract Election {
         string idcard;
     }
 
+    modifier onlyAdmin() {
+        require(isAdmin[msg.sender], "Unauthorized: Caller is not an admin");
+        _;
+    }
+
+    modifier voteActive() {
+        require(isVoteActive, "Unauthorized: Vote is Off");
+        _;
+    }
+
+    constructor() {
+        stations[msg.sender] = "default name";
+        isAdmin[msg.sender] = true;
+        isVoteActive = false;
+    }
+
+    function getStation() public view returns (string memory) {
+        return stations[msg.sender];
+    }
+
+    function setIsVoteActive() public onlyAdmin returns (bool) {
+        isVoteActive = !isVoteActive;
+        return true;
+    }
+
+    function setNameStation(
+        string memory name
+    ) public onlyAdmin returns (bool) {
+        stations[msg.sender] = name;
+        return true;
+    }
+
     // Dictionary of voters (address: Voter)
     string[] registeredIdCard;
     mapping(string => Voter) public voters;
@@ -36,6 +66,7 @@ contract Election {
     mapping(string => bool) public voted;
     mapping(string => uint) public voteTimestamp;
     mapping(address => bool) public isAdmin;
+    mapping(address => string) public stations;
 
     Candidate[] public candidates;
 
@@ -47,11 +78,6 @@ contract Election {
     );
 
     // event VoterVerified(address indexed voter);
-    constructor(uint256 _durationInMinutes) {
-        owner = msg.sender;
-        isAdmin[msg.sender] = true;
-        electionEndTime = block.timestamp + (_durationInMinutes * 1 minutes);
-    }
 
     //  Voter Component
     function generateUUID() internal view returns (string memory) {
@@ -80,7 +106,7 @@ contract Election {
     function addVoter(
         string memory _name,
         string memory _idCard
-    ) public returns (string memory) {
+    ) public onlyAdmin returns (string memory) {
         require(!voters[_idCard].isRegistered, "Voter is already registered");
 
         string memory uuid = generateUUID();
@@ -95,7 +121,7 @@ contract Election {
         return uuid;
     }
 
-    function fetchVoters() external view returns (string[][] memory) {
+    function fetchVoters() external view onlyAdmin returns (string[][] memory) {
         uint numVoters = registeredIdCard.length;
         if (numVoters == 0) {
             // Return an empty array if there are no registered voters
@@ -128,7 +154,7 @@ contract Election {
         return voters[_idCard];
     }
 
-    function deleteVoterById(string memory voterId) public {
+    function deleteVoterById(string memory voterId) public onlyAdmin {
         string memory _idCard = getIdCard[voterId].idcard;
         require(voters[_idCard].isRegistered, "Voter not found");
 
@@ -161,7 +187,10 @@ contract Election {
 
     event VoterDeleted(string indexed voterId);
 
-    function updateVoter(string memory uuid, string memory _newName) public {
+    function updateVoter(
+        string memory uuid,
+        string memory _newName
+    ) public onlyAdmin {
         string memory _idCard = getIdCard[uuid].idcard;
         require(voters[_idCard].isRegistered, "Voter not found");
         // require(msg.sender == voters[_idCard].account || isAdmin[msg.sender], "Unauthorized");
@@ -177,7 +206,7 @@ contract Election {
         string newName
     );
 
-    function verifyVoter(string memory uuid) public {
+    function verifyVoter(string memory uuid) public onlyAdmin {
         string memory _idCard = getIdCard[uuid].idcard;
         require(voters[_idCard].isRegistered, "Voter not found");
         // require(msg.sender == voters[_idCard].account || isAdmin[msg.sender], "Unauthorized");
@@ -192,7 +221,10 @@ contract Election {
     // End Voter Component
 
     // Candidate Component
-    function addCandidate(string memory _name, string memory _image) public {
+    function addCandidate(
+        string memory _name,
+        string memory _image
+    ) public onlyAdmin {
         candidates.push(Candidate({name: _name, image: _image, voteCount: 0}));
     }
 
@@ -208,15 +240,12 @@ contract Election {
 
         for (uint i = 0; i < numCandidates; i++) {
             candidatesArray[i] = candidates[i];
-            // candidatesArray[i] = candidates[i];
         }
         return candidatesArray;
     }
 
-    function deleteCandidate(uint candidateIndex) public {
+    function deleteCandidate(uint candidateIndex) public onlyAdmin {
         require(candidateIndex < candidates.length, "Invalid candidate index");
-        // delete candidates[candidateIndex];
-        // delete candidates[candidateIndex];
         candidates[candidateIndex] = candidates[candidates.length - 1];
         candidates.pop();
         // Emit an event or perform any other necessary actions
@@ -229,7 +258,7 @@ contract Election {
         uint candidateIndex,
         string memory _newName,
         string memory _newImage
-    ) public {
+    ) public onlyAdmin {
         require(candidateIndex < candidates.length, "Invalid candidate index");
 
         // You can add additional conditions or permissions if needed
@@ -249,7 +278,7 @@ contract Election {
         string newImage
     );
 
-    function vote(uint candidateIndex, string memory _uuid) public {
+    function vote(uint candidateIndex, string memory _uuid) public voteActive {
         string memory _idCard = getIdCard[_uuid].idcard;
         require(
             voters[_idCard].isRegistered,
