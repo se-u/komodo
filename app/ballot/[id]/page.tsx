@@ -34,7 +34,7 @@ const VerificationLoading = () => {
 };
 
 export default function Page({ params }: { params: { id: string } }) {
-  const [voter, setVoter] = useState();
+  const [voter, setVoter] = useState({ isVerified: false });
   const id = params.id;
 
   useEffect(() => {
