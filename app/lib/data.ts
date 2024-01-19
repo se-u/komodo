@@ -199,5 +199,5 @@ export async function deleteCandidate(index: number) {
       return { message: `error: ${error}` };
     }
   }
-  // revalidatePath("/dashboard/voter");
+  revalidatePath("/dashboard/settings");
 }

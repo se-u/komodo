@@ -37,12 +37,15 @@ export async function addCandidate(formData: FormData) {
       });
     console.log(myContract.events.VoterRegistered);
     console.log("Transaction Hash: " + receipt.transactionHash);
-    return true;
+    // return true;
+    // console.log()
   } catch (error) {
     // console.error({error});
     const errorMessage = error.toJSON().innerError.toJSON().message;
     return { error: errorMessage };
   }
+  revalidatePath("/dashboard/settings/");
+  redirect("/dashboard/settings");
 }
 
 export async function updateCandidate(formData: FormData) {
@@ -72,12 +75,15 @@ export async function updateCandidate(formData: FormData) {
       });
     console.log(myContract.events.VoterRegistered);
     console.log("Transaction Hash: " + receipt.transactionHash);
-    return receipt.events.CandidateUpdated.returnValues;
+    // return receipt.events.CandidateUpdated.returnValues;
   } catch (error) {
     // console.error({error});
     const errorMessage = error.toJSON().innerError.toJSON().message;
-    return { error: errorMessage };
+    console.log(errorMessage);
+    // return { error: errorMessage };
   }
+  revalidatePath("/dashboard/settings/");
+  redirect("/dashboard/settings/");
 }
 
 export async function validateVoter(formData: FormData) {

@@ -1,14 +1,19 @@
-import { Button } from "../button";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { UserCircleIcon, UserIcon } from "@heroicons/react/16/solid";
-import { addCandidate } from "@/app/lib/actions";
+import { updateCandidate } from "@/app/lib/actions";
+import { fetchCandidates } from "@/app/lib/data";
+import { Button } from "@/app/ui/button";
+import { UserCircleIcon } from "@heroicons/react/16/solid";
+import React from "react";
 
-export default async function FormCandidates() {
+export default async function Page({ params }) {
+  const index = params.index;
+  const candidates = await fetchCandidates();
+  const { name, image } = candidates[index];
   return (
-    <form action={addCandidate}>
+    <form action={updateCandidate}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Nomor  */}
         <div className="mb-4">
+          <input type="hidden" name="index" value={index} />
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Nomor
           </label>
@@ -21,7 +26,7 @@ export default async function FormCandidates() {
                 placeholder="Masukan Nomor Candidate"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <PencilSquareIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -37,10 +42,11 @@ export default async function FormCandidates() {
                 id="image"
                 name="image"
                 type="url"
+                defaultValue={image}
                 placeholder="Masukan URL Foto Candidate"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -55,6 +61,7 @@ export default async function FormCandidates() {
               <input
                 id="name"
                 name="name"
+                defaultValue={name}
                 type="text"
                 placeholder="Masukan Nama Candidate"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"

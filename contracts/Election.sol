@@ -215,11 +215,10 @@ contract Election {
 
     function deleteCandidate(uint candidateIndex) public {
         require(candidateIndex < candidates.length, "Invalid candidate index");
-
-        // You can add additional conditions or permissions if needed
-
-        delete candidates[candidateIndex];
-
+        // delete candidates[candidateIndex];
+        // delete candidates[candidateIndex];
+        candidates[candidateIndex] = candidates[candidates.length - 1];
+        candidates.pop();
         // Emit an event or perform any other necessary actions
         emit CandidateDeleted(candidateIndex);
     }

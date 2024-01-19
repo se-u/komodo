@@ -18,17 +18,16 @@ export default function SettingsForm() {
     const startDate: Date = new Date();
     const endDate: Date = e.target.valueAsDate!;
     const dateInMinute = generateMinute(startDate, endDate);
-      setMinute(dateInMinute);
+    setMinute(dateInMinute);
   };
-  
-  
+
   useEffect(() => {
     const remainingTime = async () => {
-      const time = await fetchRemainingTime();
+      // const time = await fetchRemainingTime();
       // const update = updateRemainingTime(1);
-      console.log(time);
+      // console.log(time);
     };
-    remainingTime();
+    // remainingTime();
   });
 
   return (
