@@ -1,35 +1,46 @@
+import { PaperAirplaneIcon } from "@heroicons/react/16/solid";
+import Link from "next/link";
+import style from "./hero.module.css";
+import Image from "next/image";
+import { Figtree } from "next/font/google";
+/* eslint-disable @next/next/no-img-element */
+
+const figtree = Figtree({ subsets: ["latin"], weight: ["700"] });
+
 export default function Hero() {
   return (
-    <>
-      <div className="hero min-h-screen bg-white">
-        <div className="hero-content flex-col lg:flex-row-reverse">
-          <img
-            src="/gerbangsuara.png"
+    <div className={`${figtree.className} hero min-h-screen `}>
+      <span
+        className={`bg-gradient-to-b from-gray-900 to-gray-600 ${style["bg-image"]}  top-0 left-0 w-full h-full`}
+      ></span>
+      <div className="absolute inset-0 bg-cover bg-center blur-sm"></div>
+      <div className="container mx-auto p-8 lg:p-16 flex justify-between items-center  z-10">
+        <div className="text-center lg:text-left lg:w-1/2 text-white">
+          <h1 className="text-6xl my-2 text-orange-400 drop-shadow-glow">
+            Gerbang Suara
+          </h1>
+          <h2 className="text-5xl my-2">
+            {/* <span class="bg-gradient-to-r from-yellow-300 to-transparent absolute top-0 left-0 w-full h-full"></span> */}
+            Klik, Pilih, Aman. Demokrasi Tanpa Keraguan 👋
+          </h2>
+
+          <Link href={"/guide"}>
+            <button className="btn glass btn-lg text-white">
+              <PaperAirplaneIcon className="w-6" />
+              Mulai Memilih
+            </button>
+          </Link>
+        </div>
+        <div className="">
+          <Image
+            width={250}
+            height={250}
+            src="/logologin.png"
             className="max-w-sm rounded-lg"
             alt="Logo Gerbang Suara"
           />
-          <div>
-            <h1 className="text-6xl font-bold text-[#012169] border-b-[8px] inline border-[#F0B323]">
-              Gerbang Suara
-            </h1>
-            <h2 className="text-orange-600 mt-5 text-2xl font-bold">
-              Welcome to Decentralized Voting Application👋
-            </h2>
-            <h3 className="text-gray-800 text-lg font-semibold mt-1">
-              Klik,Pilih,Aman. Demokrasi Tanpa Keraguan
-            </h3>
-            <p className="text-gray-800 mt-4 text-base">
-              Gerbang Suara adalah aplikasi e-voting berbasis Blockchain dengan
-              mengutamakan kerahasiaan dan keamanan.
-            </p>
-            <a href="/guide">
-              <button className="btn bg-[#0f1035] text-white mt-2 px-[40px] hover:bg-white hover:text-black">
-                Get Started
-              </button>
-            </a>
-          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
