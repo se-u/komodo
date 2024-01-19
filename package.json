@@ -14,6 +14,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@openzeppelin/contracts": "^5.0.1",
+    "chart.js": "^4.4.1",
     "clsx": "^2.1.0",
     "dotenv": "^16.3.1",
     "faker": "^5.5.3",
@@ -21,12 +22,12 @@
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
-    "solc": "^0.8.23",
     "use-debounce": "^10.0.0",
     "web3": "^4.4.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
