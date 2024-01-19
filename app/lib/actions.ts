@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { ethers } from "ethers";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
-import Web3 from "web3";
+import Web3, { ContractExecutionError, Eip838ExecutionError } from "web3";
 import { deployedAddress } from "./utils";
 
 export async function navigateBallot(id: string) {
@@ -106,10 +106,12 @@ export async function validateVoter(formData: FormData) {
     console.log("Transaction Hash: " + receipt.transactionHash);
     return receipt.events.VoterRegistered.returnValues;
   } catch (error) {
-    // console.error({error});
-    const errorMessage = error.toJSON().innerError.toJSON().message;
-    // const errorMessage = error;
-    return { error: errorMessage };
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 
@@ -167,3 +169,7 @@ export async function updateVoter(formData: FormData) {
   revalidatePath("/dasboard/voter");
   redirect("/dashboard/voter/");
 }
+
+export type ErorrVoter = {
+  error: string;
+};
