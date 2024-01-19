@@ -1,5 +1,5 @@
 "use server";
-
+// Master
 import { revalidatePath } from "next/cache";
 import { ethers } from "ethers";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
