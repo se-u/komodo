@@ -1,5 +1,5 @@
 "use server";
-
+// Master
 import { revalidatePath } from "next/cache";
 import { ethers } from "ethers";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
@@ -108,6 +108,7 @@ export async function validateVoter(formData: FormData) {
   } catch (error) {
     // console.error({error});
     const errorMessage = error.toJSON().innerError.toJSON().message;
+    // const errorMessage = error;
     return { error: errorMessage };
   }
 }
