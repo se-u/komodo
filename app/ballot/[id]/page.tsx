@@ -34,7 +34,7 @@ const VerificationLoading = () => {
 };
 
 export default function Page({ params }: { params: { id: string } }) {
-  const [voter, setVoter] = useState({ isVerified: false });
+  const [voter, setVoter] = useState();
   const id = params.id;
 
   useEffect(() => {
@@ -42,13 +42,13 @@ export default function Page({ params }: { params: { id: string } }) {
       const voter = await fetchVotersById(params.id);
       setVoter(voter);
     };
-    console.log("checking");
+
     // Fetch data initially
     fetchData();
     // Set up interval to fetch data every 1 second
     const intervalId = setInterval(fetchData, 1000);
     return () => clearInterval(intervalId);
-  });
+  }, [params.id]);
 
   return (
     <>{voter?.isVerified ? <Ballot uuid={id} /> : <VerificationLoading />}</>
