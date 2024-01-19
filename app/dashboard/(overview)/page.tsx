@@ -31,10 +31,17 @@
 //   );
 // }
 
+'use client';
 import { Card } from "@/app/ui/dashboard/cards";
+import Chart from "@/app/ui/chart";
+import BarChart from "@/app/ui/chart";
 // import { lusitana } from '@/app/ui/fonts';
-
 export default async function Page() {
+    const chartData = {
+        "Sindu Aditya Janadi": 450,
+        "Sebastian Pamungkas": 750,
+        "Aydin Ilham Pramstha": 300,
+    };
   return (
     <main>
       <h1 className={` mb-4 text-xl md:text-2xl`}>Dashboard</h1>
@@ -43,8 +50,10 @@ export default async function Page() {
         <Card title="Pending" value={13} type="pending" />
         <Card title="Total Invoices" value={14} type="invoices" />
         <Card title="Total Customers" value={15} type="customers" />
+          <BarChart dataObject={chartData} title="Data Pemilihan"/>
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8"></div>
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+      </div>
     </main>
   );
 }

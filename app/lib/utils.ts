@@ -32,4 +32,4 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 };
 
 // Change This
-export const deployedAddress = "0xFDFE54643Bd71F114193E5ae6e5f9383Eadd7636";
+export const deployedAddress = "0xE35b64499D545E1FC33A50c761412bb536a615F1";

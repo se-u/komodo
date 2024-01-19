@@ -24,13 +24,13 @@ export async function ConnectButton() {
   }
 
   return (
-    <>
-      <GuideCard />
-      <div className="w-40 h-20 mx-auto p-5">
-        <Link href="/check">
-          <button className="btn glass ">Validasi Data</button>
-        </Link>
-      </div>
-    </>
+      <>
+        <GuideCard />
+        <div className="w-40 h-20 mx-auto p-5">
+          <Link href="/check">
+            <button className="btn glass ">Validasi Data</button>
+          </Link>
+        </div>
+      </>
   );
 }
