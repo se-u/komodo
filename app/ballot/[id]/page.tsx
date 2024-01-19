@@ -42,15 +42,13 @@ export default function Page({ params }: { params: { id: string } }) {
       const voter = await fetchVotersById(params.id);
       setVoter(voter);
     };
-
+    console.log("checking");
     // Fetch data initially
     fetchData();
     // Set up interval to fetch data every 1 second
     const intervalId = setInterval(fetchData, 1000);
-
-    // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, [params.id]);
+  });
 
   return (
     <>{voter?.isVerified ? <Ballot uuid={id} /> : <VerificationLoading />}</>
