@@ -1,6 +1,7 @@
 import Hero from "@/app/ui/home/hero";
-import { ChartBarIcon } from "@heroicons/react/16/solid";
+import { ChartBarIcon, SignalIcon } from "@heroicons/react/16/solid";
 import { BookOpenIcon, HomeIcon } from "@heroicons/react/16/solid";
+import NotificationTop from "./ui/notification";
 
 export function NavBottom() {
   return (
@@ -27,6 +28,8 @@ export function NavBottom() {
 export default async function Home() {
   return (
     <>
+      <NotificationTop />
+
       <Hero />
       <NavBottom />
     </>

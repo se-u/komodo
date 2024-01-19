@@ -1,6 +1,6 @@
 "use server";
 // Master
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore } from "next/cache";
 import { ethers } from "ethers";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
@@ -153,6 +153,37 @@ export async function voteCandidate(formData: FormData) {
   }
 }
 
+export async function toggleActive() {
+  // Set up a connection to the Ethereum network
+  unstable_noStore();
+  const web3: Web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+
+  // Create a new contract object using the ABI and bytecode
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  // myContract.handleRevert = true;
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const defaultAccount: string = providersAccounts[0];
+
+  try {
+    const receipt: any = await myContract.methods.updateVoteActive().send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    console.log(receipt);
+    // return receipt.events.Voted.returnValues;
+  } catch (error) {
+    // console.error({error});
+    // const errorMessage = error.toJSON().innerError.toJSON().message;
+    return error;
+  }
+  // revalidatePath("/", "layout");
+}
+
 export async function updateVoter(formData: FormData) {
   const { id, newName } = {
     id: formData.get("id"),
@@ -174,6 +205,61 @@ export async function updateVoter(formData: FormData) {
   }
   revalidatePath("/dasboard/voter");
   redirect("/dashboard/voter/");
+}
+
+export async function updateStation(formData: FormData) {
+  const { station } = {
+    station: formData.get("station"),
+  };
+
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const tx = await contract.updateStation(station);
+      const receipt = await tx.wait();
+      console.log(`receipt: ${receipt}`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  revalidatePath("/dasboard/settings");
+}
+
+export async function addAdmin(formData: FormData) {
+  const { address } = {
+    address: formData.get("address"),
+  };
+
+  // Set up a connection to the Ethereum network
+  const web3: Web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+
+  // Create a new contract object using the ABI and bytecode
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  // myContract.handleRevert = true;
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const defaultAccount: string = providersAccounts[0];
+
+  try {
+    const receipt: any = await myContract.methods.addAdmin(address).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    console.log(receipt);
+  } catch (error) {
+    // console.error({error});
+    // const errorMessage = error.toJSON().innerError.toJSON().message;
+    console.log(error);
+  }
+  revalidatePath("/dashboard/settings/");
+  redirect("/dashboard/settings");
 }
 
 export type ErorrVoter = {

@@ -15,7 +15,8 @@ async function main() {
   // const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
   //   value: lockedAmount,
   // });
-  const lock = await hre.ethers.deployContract("Election", [300]);
+  // const lock = await hre.ethers.deployContract("Election", [300]);
+  const lock = await hre.ethers.deployContract("Election");
   await lock.waitForDeployment();
 
   console.log(`Lock with ETH and unlock timestamp deployed to ${lock.target}`);

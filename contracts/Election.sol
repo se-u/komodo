@@ -5,8 +5,16 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Election {
-    // using Strings for uint256;
     bool public isVoteActive;
+    string[] registeredIdCard;
+    mapping(string => Voter) public voters;
+    mapping(string => uuidToId) public getIdCard;
+    mapping(string => bool) public voted;
+    mapping(string => uint) public voteTimestamp;
+    mapping(address => string) public stations;
+    mapping(address => bool) public isAdmin;
+    address[] public adminAddresses;
+    Candidate[] public candidates;
 
     struct Candidate {
         string name;
@@ -39,36 +47,59 @@ contract Election {
 
     constructor() {
         stations[msg.sender] = "default name";
-        isAdmin[msg.sender] = true;
         isVoteActive = false;
+        isAdmin[msg.sender] = true;
+        adminAddresses.push(msg.sender);
     }
 
-    function getStation() public view returns (string memory) {
-        return stations[msg.sender];
-    }
-
-    function setIsVoteActive() public onlyAdmin returns (bool) {
-        isVoteActive = !isVoteActive;
+    function addAdmin(address _adminAddress) public onlyAdmin returns (bool) {
+        require(!isAdmin[_adminAddress], "Admin already exists");
+        isAdmin[_adminAddress] = true;
+        adminAddresses.push(_adminAddress);
         return true;
     }
 
-    function setNameStation(
-        string memory name
+    function deleteAdmin(
+        address _adminAddress
     ) public onlyAdmin returns (bool) {
+        require(isAdmin[_adminAddress], "Admin not found");
+        isAdmin[_adminAddress] = false;
+
+        // Remove the admin from the array
+        uint indexToDelete;
+        for (uint i = 0; i < adminAddresses.length; i++) {
+            if (adminAddresses[i] == _adminAddress) {
+                indexToDelete = i;
+                break;
+            }
+        }
+        if (indexToDelete < adminAddresses.length - 1) {
+            adminAddresses[indexToDelete] = adminAddresses[
+                adminAddresses.length - 1
+            ];
+        }
+        adminAddresses.pop();
+
+        return true;
+    }
+
+    function fetchAllAdmin() public view onlyAdmin returns (address[] memory) {
+        return adminAddresses;
+    }
+
+    function fetchStation() public view returns (string memory) {
+        return stations[msg.sender];
+    }
+
+    function updateStation(string memory name) public onlyAdmin returns (bool) {
         stations[msg.sender] = name;
         return true;
     }
 
-    // Dictionary of voters (address: Voter)
-    string[] registeredIdCard;
-    mapping(string => Voter) public voters;
-    mapping(string => uuidToId) public getIdCard;
-    mapping(string => bool) public voted;
-    mapping(string => uint) public voteTimestamp;
-    mapping(address => bool) public isAdmin;
-    mapping(address => string) public stations;
-
-    Candidate[] public candidates;
+    function updateVoteActive() public onlyAdmin returns (bool) {
+        isVoteActive = !isVoteActive;
+        return true;
+    }
 
     event VoterRegistered(
         address indexed electionAccount,
@@ -76,18 +107,6 @@ contract Election {
         string idCard,
         string uuid
     );
-
-    // event VoterVerified(address indexed voter);
-
-    //  Voter Component
-    function generateUUID() internal view returns (string memory) {
-        // Use a simple deterministic algorithm for demonstration
-        // In a production environment, consider using an off-chain service for UUID generation
-        bytes32 result = keccak256(
-            abi.encodePacked(block.timestamp, msg.sender)
-        );
-        return Strings.toHexString(uint256(result), 32);
-    }
 
     function bytes32ToString(
         bytes32 _bytes32
@@ -302,4 +321,13 @@ contract Election {
         string indexed idCard,
         uint indexed candidateIndex
     );
+
+    function generateUUID() internal view returns (string memory) {
+        // Use a simple deterministic algorithm for demonstration
+        // In a production environment, consider using an off-chain service for UUID generation
+        bytes32 result = keccak256(
+            abi.encodePacked(block.timestamp, msg.sender)
+        );
+        return Strings.toHexString(uint256(result), 32);
+    }
 }

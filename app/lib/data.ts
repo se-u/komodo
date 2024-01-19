@@ -112,6 +112,23 @@ export async function deleteVoterById(id: string) {
   revalidatePath("/dashboard/voter");
 }
 
+export async function deleteAdminByAddress(address: string) {
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const deleteAdmin = await contract.deleteAdmin(address);
+      deleteAdmin.wait();
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+  revalidatePath("/dashboard/settings");
+}
+
 export async function verifyVoterById(id: string) {
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
   const signer = await provider.getSigner();
@@ -159,6 +176,23 @@ export async function updateRemainingTime(minute: number) {
   }
 }
 
+export async function fetchStation() {
+  unstable_noStore();
+
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const candidates = await contract.fetchStation();
+      return candidates;
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+}
 export async function fetchCandidates() {
   unstable_noStore();
 
@@ -179,6 +213,42 @@ export async function fetchCandidates() {
         };
       });
       return candidatesFormated;
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+}
+
+export async function fetchIsVoteActive() {
+  unstable_noStore();
+
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const status = await contract.isVoteActive();
+      return status;
+    } catch (error) {
+      return { message: `error: ${error}` };
+    }
+  }
+}
+
+export async function fetchAdmins() {
+  unstable_noStore();
+
+  // const contract = await connectToMetaMask();
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
+
+  if (contract) {
+    try {
+      const admins = await contract.fetchAllAdmin();
+      return admins;
     } catch (error) {
       return { message: `error: ${error}` };
     }
