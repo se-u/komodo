@@ -4,10 +4,9 @@ import {
   deleteAdminByAddress,
   deleteCandidate,
   deleteVoterById,
-  getContract,
+
   verifyVoterById,
 } from "../lib/data";
-import { revalidatePath } from "next/cache";
 import { ShieldCheckIcon } from "@heroicons/react/16/solid";
 
 export function CreateVoter() {

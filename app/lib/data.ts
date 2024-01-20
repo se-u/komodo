@@ -73,7 +73,7 @@ export async function fetchVoters() {
       gas: 1000000,
       gasPrice: "10000000000",
     });
-    const votersFormatted = voters.map((voter, index) => {
+    const votersFormatted = voters.map((voter: string[], index: any) => {
       return {
         index: index,
         id: voter[0],
@@ -215,7 +215,7 @@ export async function fetchCandidates() {
     });
     // console.log(`fecthCandidates: ${receipt}`);
     // console.log(receipt);
-    const candidatesFormated = receipt.map((candidate, index) => {
+    const candidatesFormated = receipt.map((candidate: any[], index: any) => {
       return {
         index: index,
         name: candidate[0],

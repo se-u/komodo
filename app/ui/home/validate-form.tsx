@@ -10,7 +10,7 @@ export default function ValidateForm() {
   const [connectedAccount, setConnectedAccount] = useState("null");
 
   useEffect(() => {
-    const local = localStorage.getItem("connectedAccount");
+    const local:any = localStorage.getItem("connectedAccount");
     setConnectedAccount(local);
   }, []);
 

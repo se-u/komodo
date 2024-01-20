@@ -34,12 +34,19 @@ const VerificationLoading = () => {
 };
 
 export default function Page({ params }: { params: { id: string } }) {
-  const [voter, setVoter] = useState();
+  const [voter, setVoter] = useState({
+    isRegistered: "any",
+    isVerified: "any",
+    id: "any",
+    name: "any",
+    idCard: "any",
+    account: "any",
+  });
   const id = params.id;
 
   useEffect(() => {
     const fetchData = async () => {
-      const voter = await fetchVotersById(params.id);
+      const voter: any = await fetchVotersById(params.id);
       setVoter(voter);
     };
 

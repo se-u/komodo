@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import SideNav from "../ui/dashboard/sidenav";
 import { fetchAdmins } from "../lib/data";
+import AccessDenied from "../ui/access-denied";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [authorized, setAuthorized] = useState(false);
   useEffect(() => {
-    const account = localStorage.getItem("connectedAccount") || "";
-    fetchAdmins().then((data: []) => {
+    const account: string = localStorage.getItem("connectedAccount") || "";
+    fetchAdmins().then((data: string[]) => {
       if (data.includes(account)) {
         console.log(data);
         setAuthorized(true);
@@ -26,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       ) : (
-        "not permitedd"
+        <AccessDenied />
       )}
     </>
   );

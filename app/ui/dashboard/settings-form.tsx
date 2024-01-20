@@ -10,7 +10,7 @@ export default function SettingsForm() {
   const [change, setChange] = useState(false);
   useEffect(() => {
     async function getStatus() {
-      const status = await fetchIsVoteActive();
+      const status = await fetchIsVoteActive("");
       setVoteActive(status);
       console.log(status);
     }

@@ -5,7 +5,6 @@ import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
 import Web3, { ContractExecutionError } from "web3";
 import { deployedAddress } from "./utils";
-import { connectedAccount } from "./account";
 
 async function getContract() {
   const web3 = new Web3(
@@ -25,7 +24,7 @@ export async function navigateBallot(id: string) {
   redirect(`/ballot/${id}`);
 }
 
-export async function validateVoter(formData: FormData, account) {
+export async function validateVoter(formData: FormData, account: string) {
   const { name, idCard } = {
     name: formData.get("name"),
     idCard: formData.get("idCard"),
@@ -47,7 +46,8 @@ export async function validateVoter(formData: FormData, account) {
       return { error: error.innerError.message };
     }
     console.log(error);
-    return { error: error.innerError.message };
+    // error.innerError.message 
+    return { error: "error"};
   }
 }
 

@@ -21,7 +21,7 @@ export default function Ballot({ uuid }: { uuid: string }) {
   };
 
   useEffect(() => {
-    const account = localStorage.getItem("connectedAccount");
+    const account : any = localStorage.getItem("connectedAccount");
     setConnectedAccount(account);
     const getCandidates = async () => {
       const candidates = await fetchCandidates();

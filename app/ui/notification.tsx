@@ -45,17 +45,24 @@ export default function NotificationTop() {
       if (connectedAccount === "null") {
         connectMetamask();
       }
+
       // Initial check when component mounts
       checkVoteStatus();
-      window.ethereum.on("accountsChanged", function (accounts) {
+
+      const handleAccountsChanged = function () {
         connectMetamask();
-      });
+      };
+
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+
       // Set up an interval to check the status every, for example, 10 seconds
+      const intervalId = setInterval(checkVoteStatus, 5000);
 
-      const intervalId = setInterval(checkVoteStatus, 10000);
-
-      // Clean up the interval when the component unmounts
-      return () => clearInterval(intervalId);
+      // Clean up the interval and event listener when the component unmounts
+      return () => {
+        clearInterval(intervalId);
+        window.ethereum.off("accountsChanged", handleAccountsChanged);
+      };
     } catch (error) {
       console.log("error");
     }
@@ -64,7 +71,7 @@ export default function NotificationTop() {
   return (
     <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 p-4 text-white">
       <ul className="menu bg-base-200 lg:menu-horizontal rounded-box">
-        <li>
+        <li onClick={() => connectMetamask()}>
           {connectedAccount !== "null" ? (
             <a>
               <span className="relative flex h-5 w-5">

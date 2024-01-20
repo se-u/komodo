@@ -2,9 +2,8 @@ import { updateCandidate } from "@/app/lib/actions";
 import { fetchCandidates } from "@/app/lib/data";
 import { Button } from "@/app/ui/button";
 import { UserCircleIcon } from "@heroicons/react/16/solid";
-import React from "react";
 
-export default async function Page({ params }) {
+export default async function Page({ params }: { params: any }) {
   const index = params.index;
   const candidates = await fetchCandidates();
   const { name, image } = candidates[index];

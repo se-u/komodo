@@ -6,7 +6,7 @@ import { ClockIcon } from "@heroicons/react/20/solid";
 export default async function Statistik() {
   const isActive = await fetchIsVoteActive("");
   const candidates = await fetchCandidates();
-  const chartData = candidates.reduce((result, candidate) => {
+  const chartData = candidates.reduce((result: { [x: string]: number; }, candidate: { name: string; count: any; }) => {
     const candidateName = candidate.name.trim().toLowerCase();
     result[candidateName] = Number(candidate.count);
     return result;
