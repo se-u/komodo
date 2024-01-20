@@ -1,25 +1,19 @@
 "use client";
 import { FormEvent, useEffect, useState } from "react";
 import style from "./ballot.module.css";
-import { deleteCandidate, fetchCandidates } from "@/app/lib/data";
-import {
-  addCandidate,
-  updateCandidate,
-  voteCandidate,
-} from "@/app/lib/actions";
+import { fetchCandidates } from "@/app/lib/data";
+import { voteCandidate } from "@/app/lib/actions";
 
-export default function Ballot({ uuid }) {
+export default function Ballot({ uuid }: { uuid: string }) {
   const [candidates, setCandidates] = useState([
     { index: 0, name: "", image: "" },
   ]);
-
-  // Handle Submit Form in Client Component
+  const [connectedAccount, setConnectedAccount] = useState("null");
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setLoading(true);
     try {
       const formData = new FormData(e.currentTarget);
-      const response = await voteCandidate(formData);
+      const response = await voteCandidate(formData, connectedAccount);
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -27,52 +21,18 @@ export default function Ballot({ uuid }) {
   };
 
   useEffect(() => {
-    // Karena ini di client jadi pke useEffect
-    // kalau server component kayak table voter
+    const account = localStorage.getItem("connectedAccount");
+    setConnectedAccount(account);
     const getCandidates = async () => {
       const candidates = await fetchCandidates();
-      console.log(`candidates: ${candidates[0].count}`);
+      // console.log(`candidates: ${candidates[0].count}`);
       setCandidates(candidates);
     };
-
-    const updateCandidateByIndex = async () => {
-      const formData = new FormData();
-      formData.set("index", "1");
-      formData.set("name", "Prabowo Subianto");
-      formData.set(
-        "image",
-        "https://cdnwpseller.gramedia.net/wp-content/uploads/2022/03/01181146/Jokowi.jpg"
-      );
-      const candidates = await updateCandidate(formData);
-      console.log(`update: ${candidates}`);
-    };
-    // update();
-
-    // Note For Future My Self, Delete Work But Not Make Content Disapear
-    const deleteCanditaByIndex = async (index: number) => {
-      const candidates = await deleteCandidate(index);
-      console.log(`delete: ${candidates}`);
-    };
-
-    // deleteCanditaByIndex(3);
-
-    // Add Candidate Using Form Data (require use client)
-    const pushCandidate = async () => {
-      const formData = new FormData();
-      formData.set("name", "B.J Habibie");
-      formData.set(
-        "image",
-        "https://cdnwpseller.gramedia.net/wp-content/uploads/2022/03/01181146/Jokowi.jpg"
-      );
-      const candidates = await addCandidate(formData);
-      console.log(`pushCandidate: ${candidates}`);
-    };
-    // pushCandidate();
 
     getCandidates();
   }, []);
   return (
-    <div className={style["ballot-bg"]}>
+    <div className={`${style["ballot-bg"]} bg-slate-200`}>
       <div className="mb-4 text-center">
         <h1 className="text-4xl font-bold text-[#012169] border-b-[5px] inline border-[#F0B323]">
           Voting Sistem
@@ -86,7 +46,10 @@ export default function Ballot({ uuid }) {
       <form onSubmit={handleSubmit} className={style["row"]}>
         <input type="hidden" name="uuid" value={uuid} />
         {candidates.map((candidate) => (
-          <div className={style["card"]} key={candidate.index}>
+          <div
+            className={`${style["card"]} hover:bg-black`}
+            key={candidate.index}
+          >
             <input
               type="radio"
               name="card-option"
@@ -96,15 +59,22 @@ export default function Ballot({ uuid }) {
             />
             <label
               htmlFor={`candidate_${candidate.index}`}
+              style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url('${candidate.image}')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
               className={style["card-label"]}
             >
               {candidate.name}
             </label>
           </div>
         ))}
-        <button type="submit" className="btn btn-block">
-          Kirim
-        </button>
+        <div className="btm-nav glass bg-orange-400 text-gray-300 text-sm hover:bg-orange-500">
+          <button type="submit" className="text-black text-lg font-bold">
+            KIRIM
+          </button>
+        </div>
       </form>
     </div>
   );

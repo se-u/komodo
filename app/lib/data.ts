@@ -1,9 +1,9 @@
 "use server";
 // lib/data/connectMetaMask.js
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
-import { ContractRunner, ethers } from "ethers";
 import { revalidatePath, unstable_noStore } from "next/cache";
 import { deployedAddress } from "./utils";
+import Web3, { ContractExecutionError } from "web3";
 
 // export async function connectToMetaMask() {
 //   // Check if MetaMask is installed
@@ -40,234 +40,259 @@ import { deployedAddress } from "./utils";
 //   }
 // }
 
+async function getContract() {
+  let web3: Web3;
+  // if (window.ethereum) {
+  // const provider = new Web3.providers.HttpProvider(window.ethereum);
+  // web3 = new Web3(provider);
+  // web3 = new Web3(window.ethereum);
+  // await window.ethereum.request({ method: "eth_requestAccounts" });
+  // const accounts = await web3.eth.getAccounts();
+  // await window.ethereum.request({ method: "eth_requestAccounts" });
+  // // web3 = new Web3(new Web3.providers.HttpProvider(window.ethereum));
+  // console.log(web3);
+  // } else {
+  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+  // }
+  const contract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const account: string = providersAccounts[0];
+  const result: { myContract: any; defaultAccount: string } = {
+    myContract: contract,
+    defaultAccount: account,
+  };
+  return result;
+}
+
 export async function fetchVoters() {
   unstable_noStore();
-
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const voters = await contract.fetchVoters();
-      const votersFormatted = voters.map((voter, index) => {
-        return {
-          index: index,
-          id: voter[0],
-          name: voter[1],
-          idCard: voter[2],
-          isVerified: true ? voter[3] === "Verified" : false,
-          isRegistered: true ? voter[4] === "Registered" : false,
-          // isRegistered: voter[3],
-          // account: voter[4],
-        };
-      });
-      return votersFormatted;
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const voters: any = await myContract.methods.fetchVoters().call({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    const votersFormatted = voters.map((voter, index) => {
+      return {
+        index: index,
+        id: voter[0],
+        name: voter[1],
+        idCard: voter[2],
+        isVerified: true ? voter[3] === "Verified" : false,
+        isRegistered: true ? voter[4] === "Registered" : false,
+      };
+    });
+    return votersFormatted;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 
 export async function fetchVotersById(id: string) {
   unstable_noStore();
 
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const voter = await contract.getVoterById(id);
-
-      return {
-        isRegistered: voter[0],
-        isVerified: voter[1],
-        id: voter[2],
-        name: voter[3],
-        idCard: voter[4],
-        account: voter[5],
-      };
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const voter: any = await myContract.methods.getVoterById(id).call({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    // console.log(voter);
+    return {
+      isRegistered: voter[0],
+      isVerified: voter[1],
+      id: voter[2],
+      name: voter[3],
+      idCard: voter[4],
+      account: voter[5],
+    };
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 
 export async function deleteVoterById(id: string) {
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const voters = await contract.deleteVoterById(id);
-      voters.wait();
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.deleteVoterById(id).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(`deleteVoter: ${receipt}`);
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
   revalidatePath("/dashboard/voter");
 }
 
 export async function deleteAdminByAddress(address: string) {
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const deleteAdmin = await contract.deleteAdmin(address);
-      deleteAdmin.wait();
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.deleteAdmin(address).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(`deleteAdmin: ${receipt}`);
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
   revalidatePath("/dashboard/settings");
 }
 
 export async function verifyVoterById(id: string) {
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-  if (contract) {
-    try {
-      const voters = await contract.verifyVoter(id);
-      voters.wait();
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.verifyVoter(id).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(`verify: ${receipt}`);
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
   revalidatePath(`/ballot/${id}`);
   revalidatePath("/dashboard/voter");
 }
 
-export async function fetchRemainingTime() {
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-  if (contract) {
-    try {
-      console.log("terpanggil time");
-
-      const tx = await contract.getRemainingTime();
-      return tx;
-    } catch (error) {
-      console.log(`failed to register: ${error.message}`);
-    }
-  }
-  // console.log(voterAddress);
-  // revalidatePath("/dasboard/voter");
-  // redirect("/validate/status");
-}
-
-export async function updateRemainingTime(minute: number) {
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    const tx = await contract.modifyRemainingTime(minute);
-    await tx.wait();
-    // console.log(`receipt: ${tx}`);
-  }
-}
-
 export async function fetchStation() {
   unstable_noStore();
-
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const candidates = await contract.fetchStation();
-      return candidates;
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.fetchStation().call({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(`getStation: ${receipt}`);
+    return receipt;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 export async function fetchCandidates() {
   unstable_noStore();
-
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const candidates = await contract.fetchCandidates();
-      const candidatesFormated = candidates.map((candidate, index) => {
-        return {
-          index: index,
-          name: candidate[0],
-          image: candidate[1],
-          count: candidate[2],
-        };
-      });
-      return candidatesFormated;
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.fetchCandidates().call({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    // console.log(`fecthCandidates: ${receipt}`);
+    // console.log(receipt);
+    const candidatesFormated = receipt.map((candidate, index) => {
+      return {
+        index: index,
+        name: candidate[0],
+        image: candidate[1],
+        count: candidate[2],
+      };
+    });
+    // console.log(candidatesFormated);
+    return candidatesFormated;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 
-export async function fetchIsVoteActive() {
+export async function fetchIsVoteActive(account: string) {
   unstable_noStore();
-
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const status = await contract.isVoteActive();
-      return status;
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.isVoteActive().call({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    // console.log(`isVoteActive: ${receipt}`);
+    return receipt;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 
 export async function fetchAdmins() {
   unstable_noStore();
-
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const admins = await contract.fetchAllAdmin();
-      return admins;
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.fetchAllAdmin().call({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(`fetchAdmin: ${receipt}`);
+    return receipt;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
 }
 
 export async function deleteCandidate(index: number) {
-  // const contract = await connectToMetaMask();
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const voters = await contract.deleteCandidate(index);
-      voters.wait();
-    } catch (error) {
-      return { message: `error: ${error}` };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods.deleteCandidate(index).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(`deleteCandidate: ${receipt}`);
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
     }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
   revalidatePath("/dashboard/settings");
 }

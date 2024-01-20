@@ -66,7 +66,7 @@ const BarChart: React.FC<ChartProps> = ({ dataObject, title }) => {
   }, [dataObject, title]);
 
   return (
-    <div className="w-[500px] h-[300px] bg-white rounded-2xl p-3">
+    <div className="w-full h-[500px] bg-slate-100 rounded-2xl p-3 shadow-md">
       <canvas ref={chartRef} className="mx-auto w-[400px]" />
     </div>
   );

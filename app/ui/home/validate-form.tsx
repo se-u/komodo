@@ -7,6 +7,12 @@ export default function ValidateForm() {
   const [error, setError] = useState({ error: null });
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [connectedAccount, setConnectedAccount] = useState("null");
+
+  useEffect(() => {
+    const local = localStorage.getItem("connectedAccount");
+    setConnectedAccount(local);
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -14,7 +20,7 @@ export default function ValidateForm() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      const response = await validateVoter(formData);
+      const response = await validateVoter(formData, connectedAccount);
       if (response?.error) {
         setError({ error: response.error });
         setLoading(false);
@@ -59,9 +65,9 @@ export default function ValidateForm() {
           </button>
         </div>
       ) : null}
-      <div className="flex justify-center m-12">
+      <div className="flex justify-center m-12 text-white">
         <form onSubmit={handleSubmit}>
-          <div className="glass shadow-lg px-8 py-10 rounded-md">
+          <div className="glass shadow-lg px-8 py-10 rounded-md text-white">
             <label className="form-control w-full max-w-xs">
               <div className="label">
                 <span className="label-text">Nama</span>

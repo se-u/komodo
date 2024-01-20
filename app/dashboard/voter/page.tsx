@@ -1,8 +1,6 @@
-import Pagination from "@/app/ui/voter/pagination";
 import Search from "@/app/ui/search";
 import Table from "@/app/ui/voter/table";
 import { CreateVoter } from "@/app/ui/buttons";
-import { fetchVoters } from "@/app/lib/data";
 import { Suspense } from "react";
 import { InvoicesTableSkeleton, TableRowSkeleton } from "@/app/ui/skeleton";
 

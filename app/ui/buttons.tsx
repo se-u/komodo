@@ -55,6 +55,20 @@ export async function VerifyVoter({
   );
 }
 
+export async function DeleteVoter({ id }: { id: string }) {
+  const deleteVoter = deleteVoterById.bind(null, id);
+  return (
+    <>
+      <form action={deleteVoter}>
+        <button className="rounded-md border p-2 hover:bg-gray-100">
+          <span className="sr-only">Delete</span>
+          <TrashIcon className="w-5" />
+        </button>
+      </form>
+    </>
+  );
+}
+
 export async function DeleteAdmin({ address }: { address: string }) {
   const deleteAdmin = deleteAdminByAddress.bind(null, address);
   return (

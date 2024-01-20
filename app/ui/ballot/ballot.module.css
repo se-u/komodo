@@ -5,8 +5,10 @@
 } */
 
 .ballot-bg {
-    padding: 8em;
-    background-color: white;
+    padding-top: 6em;
+    padding-left: 8em;
+    padding-right: 8em;
+    height: 100vh;
 }
 
 
@@ -39,7 +41,7 @@
     flex: 1;
     height: 40vh;
     font-weight: bold;
-    background-color: #3498db;
+    /* background-color: #3498db; */
     color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;

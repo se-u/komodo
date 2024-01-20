@@ -125,7 +125,7 @@ contract Election {
     function addVoter(
         string memory _name,
         string memory _idCard
-    ) public onlyAdmin returns (string memory) {
+    ) public returns (string memory) {
         require(!voters[_idCard].isRegistered, "Voter is already registered");
 
         string memory uuid = generateUUID();

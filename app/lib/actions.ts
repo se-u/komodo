@@ -1,14 +1,81 @@
 "use server";
 // Master
 import { revalidatePath, unstable_noStore } from "next/cache";
-import { ethers } from "ethers";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
-import Web3, { ContractExecutionError, Eip838ExecutionError } from "web3";
+import Web3, { ContractExecutionError } from "web3";
 import { deployedAddress } from "./utils";
+import { connectedAccount } from "./account";
+
+async function getContract() {
+  const web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+  const contract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  const providersAccounts: string[] = await web3.eth.getAccounts();
+  const account: string = providersAccounts[0];
+  const result: { myContract: any; defaultAccount: string } = {
+    myContract: contract,
+    defaultAccount: account,
+  };
+  return result;
+}
 
 export async function navigateBallot(id: string) {
   redirect(`/ballot/${id}`);
+}
+
+export async function validateVoter(formData: FormData, account) {
+  const { name, idCard } = {
+    name: formData.get("name"),
+    idCard: formData.get("idCard"),
+  };
+  const { myContract, defaultAccount } = await getContract();
+
+  try {
+    const receipt: any = await myContract.methods.addVoter(name, idCard).send({
+      from: account,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    // console.log(myContract.events.VoterRegistered);
+    // console.log("Transaction Hash: " + receipt.transactionHash);
+    return receipt.events.VoterRegistered.returnValues;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: error.innerError.message };
+  }
+}
+
+export async function voteCandidate(formData: FormData, account: string) {
+  const { index, uuid } = {
+    index: Number(formData.get("card-option")),
+    uuid: formData.get("uuid"),
+  };
+  const { myContract, defaultAccount } = await getContract();
+
+  try {
+    const receipt: any = await myContract.methods.vote(index, uuid).send({
+      from: account,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log(myContract.events.VoterRegistered);
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    // return receipt.events.Voted.returnValues;
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
+  }
+  redirect("/thanks");
 }
 
 export async function addCandidate(formData: FormData) {
@@ -16,17 +83,7 @@ export async function addCandidate(formData: FormData) {
     name: formData.get("name"),
     image: formData.get("image"),
   };
-  // Set up a connection to the Ethereum network
-  const web3: Web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
-  );
-
-  // Create a new contract object using the ABI and bytecode
-  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  // myContract.handleRevert = true;
-  const providersAccounts: string[] = await web3.eth.getAccounts();
-  const defaultAccount: string = providersAccounts[0];
-
+  const { myContract, defaultAccount } = await getContract();
   try {
     const receipt: any = await myContract.methods
       .addCandidate(name, image)
@@ -37,12 +94,14 @@ export async function addCandidate(formData: FormData) {
       });
     console.log(myContract.events.VoterRegistered);
     console.log("Transaction Hash: " + receipt.transactionHash);
-    // return true;
-    // console.log()
+    console.log("Berhasil Menambahkan Kandidat");
   } catch (error) {
-    // console.error({error});
-    const errorMessage = error.toJSON().innerError.toJSON().message;
-    return { error: errorMessage };
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
   revalidatePath("/dashboard/settings/");
   redirect("/dashboard/settings");
@@ -55,15 +114,7 @@ export async function updateCandidate(formData: FormData) {
     image: formData.get("image"),
   };
   // Set up a connection to the Ethereum network
-  const web3: Web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
-  );
-
-  // Create a new contract object using the ABI and bytecode
-  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  // myContract.handleRevert = true;
-  const providersAccounts: string[] = await web3.eth.getAccounts();
-  const defaultAccount: string = providersAccounts[0];
+  const { myContract, defaultAccount } = await getContract();
 
   try {
     const receipt: any = await myContract.methods
@@ -75,42 +126,6 @@ export async function updateCandidate(formData: FormData) {
       });
     console.log(myContract.events.VoterRegistered);
     console.log("Transaction Hash: " + receipt.transactionHash);
-    // return receipt.events.CandidateUpdated.returnValues;
-  } catch (error) {
-    // console.error({error});
-    const errorMessage = error.toJSON().innerError.toJSON().message;
-    console.log(errorMessage);
-    // return { error: errorMessage };
-  }
-  revalidatePath("/dashboard/settings/");
-  redirect("/dashboard/settings/");
-}
-
-export async function validateVoter(formData: FormData) {
-  const { name, idCard } = {
-    name: formData.get("name"),
-    idCard: formData.get("idCard"),
-  };
-  // Set up a connection to the Ethereum network
-  const web3: Web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
-  );
-
-  // Create a new contract object using the ABI and bytecode
-  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  // myContract.handleRevert = true;
-  const providersAccounts: string[] = await web3.eth.getAccounts();
-  const defaultAccount: string = providersAccounts[0];
-
-  try {
-    const receipt: any = await myContract.methods.addVoter(name, idCard).send({
-      from: defaultAccount,
-      gas: 1000000,
-      gasPrice: "10000000000",
-    });
-    console.log(myContract.events.VoterRegistered);
-    console.log("Transaction Hash: " + receipt.transactionHash);
-    return receipt.events.VoterRegistered.returnValues;
   } catch (error) {
     if (error instanceof ContractExecutionError) {
       console.log(error.innerError.message);
@@ -119,53 +134,96 @@ export async function validateVoter(formData: FormData) {
     console.log(error);
     return { error: "Ops Ada kesalahan" };
   }
+  revalidatePath("/dashboard/settings/");
+  redirect("/dashboard/settings/");
 }
 
-export async function voteCandidate(formData: FormData) {
-  const { index, uuid } = {
-    index: Number(formData.get("card-option")),
-    uuid: formData.get("uuid"),
+export async function addAdmin(formData: FormData) {
+  const { address } = {
+    address: formData.get("address"),
   };
-  // Set up a connection to the Ethereum network
-  const web3: Web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
-  );
 
-  // Create a new contract object using the ABI and bytecode
-  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  // myContract.handleRevert = true;
-  const providersAccounts: string[] = await web3.eth.getAccounts();
-  const defaultAccount: string = providersAccounts[0];
+  const { myContract, defaultAccount } = await getContract();
 
   try {
-    const receipt: any = await myContract.methods.vote(index, uuid).send({
+    const receipt: any = await myContract.methods.addAdmin(address).send({
       from: defaultAccount,
       gas: 1000000,
       gasPrice: "10000000000",
     });
-    console.log(myContract.events.VoterRegistered);
+    // console.log(myContract.events.VoterRegistered);
     console.log("Transaction Hash: " + receipt.transactionHash);
-    return receipt.events.Voted.returnValues;
+    console.log(receipt);
   } catch (error) {
-    // console.error({error});
-    // const errorMessage = error.toJSON().innerError.toJSON().message;
-    return error;
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
+  revalidatePath("/dashboard/settings/");
+  redirect("/dashboard/settings");
+}
+
+export async function updateVoter(formData: FormData) {
+  const { id, newName } = {
+    id: formData.get("id"),
+    newName: formData.get("name"),
+  };
+  const { myContract, defaultAccount } = await getContract();
+  try {
+    const receipt: any = await myContract.methods
+      .updateVoter(id, newName)
+      .send({
+        from: defaultAccount,
+        gas: 1000000,
+        gasPrice: "10000000000",
+      });
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    console.log(receipt);
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
+  }
+  revalidatePath("/dashboard/voter");
+  redirect("/dashboard/voter");
+}
+
+export async function updateStation(formData: FormData) {
+  const { station } = {
+    station: formData.get("station"),
+  };
+  const { myContract, defaultAccount } = await getContract();
+
+  try {
+    const receipt: any = await myContract.methods.updateStation(station).send({
+      from: defaultAccount,
+      gas: 1000000,
+      gasPrice: "10000000000",
+    });
+    console.log("Transaction Hash: " + receipt.transactionHash);
+    console.log(receipt);
+  } catch (error) {
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
+  }
+  revalidatePath("/dashboard/settings/");
+  redirect("/dashboard/settings");
 }
 
 export async function toggleActive() {
   // Set up a connection to the Ethereum network
   unstable_noStore();
-  const web3: Web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
-  );
-
-  // Create a new contract object using the ABI and bytecode
-  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  // myContract.handleRevert = true;
-  const providersAccounts: string[] = await web3.eth.getAccounts();
-  const defaultAccount: string = providersAccounts[0];
-
+  const { myContract, defaultAccount } = await getContract();
   try {
     const receipt: any = await myContract.methods.updateVoteActive().send({
       from: defaultAccount,
@@ -175,91 +233,15 @@ export async function toggleActive() {
     console.log(myContract.events.VoterRegistered);
     console.log("Transaction Hash: " + receipt.transactionHash);
     console.log(receipt);
-    // return receipt.events.Voted.returnValues;
   } catch (error) {
-    // console.error({error});
-    // const errorMessage = error.toJSON().innerError.toJSON().message;
-    return error;
+    if (error instanceof ContractExecutionError) {
+      console.log(error.innerError.message);
+      return { error: error.innerError.message };
+    }
+    console.log(error);
+    return { error: "Ops Ada kesalahan" };
   }
   // revalidatePath("/", "layout");
-}
-
-export async function updateVoter(formData: FormData) {
-  const { id, newName } = {
-    id: formData.get("id"),
-    newName: formData.get("name"),
-  };
-
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const tx = await contract.updateVoter(id, newName);
-      const receipt = await tx.wait();
-      console.log(`receipt: ${receipt}`);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  revalidatePath("/dasboard/voter");
-  redirect("/dashboard/voter/");
-}
-
-export async function updateStation(formData: FormData) {
-  const { station } = {
-    station: formData.get("station"),
-  };
-
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-  const signer = await provider.getSigner();
-  const contract = new ethers.Contract(deployedAddress, abi.abi, signer);
-
-  if (contract) {
-    try {
-      const tx = await contract.updateStation(station);
-      const receipt = await tx.wait();
-      console.log(`receipt: ${receipt}`);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  revalidatePath("/dasboard/settings");
-}
-
-export async function addAdmin(formData: FormData) {
-  const { address } = {
-    address: formData.get("address"),
-  };
-
-  // Set up a connection to the Ethereum network
-  const web3: Web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
-  );
-
-  // Create a new contract object using the ABI and bytecode
-  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
-  // myContract.handleRevert = true;
-  const providersAccounts: string[] = await web3.eth.getAccounts();
-  const defaultAccount: string = providersAccounts[0];
-
-  try {
-    const receipt: any = await myContract.methods.addAdmin(address).send({
-      from: defaultAccount,
-      gas: 1000000,
-      gasPrice: "10000000000",
-    });
-    console.log(myContract.events.VoterRegistered);
-    console.log("Transaction Hash: " + receipt.transactionHash);
-    console.log(receipt);
-  } catch (error) {
-    // console.error({error});
-    // const errorMessage = error.toJSON().innerError.toJSON().message;
-    console.log(error);
-  }
-  revalidatePath("/dashboard/settings/");
-  redirect("/dashboard/settings");
 }
 
 export type ErorrVoter = {
