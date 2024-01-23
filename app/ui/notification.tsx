@@ -1,78 +1,46 @@
 "use client";
-import { useEffect, useState } from "react";
+import { SetStateAction, useContext, useEffect, useState } from "react";
 import { SignalIcon } from "@heroicons/react/16/solid";
 import { fetchIsVoteActive } from "../lib/data";
 import Web3 from "web3";
+import AuthContext  from "../auth-context";
 
 export default function NotificationTop() {
-  const [voteActive, setVoteActive] = useState(false);
-  //state to store and show the connected account
-  const [connectedAccount, setConnectedAccount] = useState("null");
-
-  async function connectMetamask() {
-    //check metamask is installed
-    if (window.ethereum) {
-      // instantiate Web3 with the injected provider
-      const web3 = new Web3(window.ethereum);
-
-      //request user to connect accounts (Metamask will prompt)
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-
-      //get the connected accounts
-      const accounts = await web3.eth.getAccounts();
-
-      //show the first connected account in the react page
-      setConnectedAccount(accounts[0]);
-      localStorage.setItem("connectedAccount", accounts[0]);
-      // alert(`connect : ${accounts[0]}`);
-    } else {
-      alert("Please download metamask");
-    }
-  }
-
-  const checkVoteStatus = async () => {
-    try {
-      const isActive = await fetchIsVoteActive(connectedAccount);
-      setVoteActive(isActive);
-    } catch (error) {
-      console.log("error");
-    }
-  };
-  console.log(connectedAccount);
+  const [auth,setAuth] = useContext(AuthContext);
+  console.log(auth)
 
   useEffect(() => {
     try {
-      if (connectedAccount === "null") {
-        connectMetamask();
-      }
-
-      // Initial check when component mounts
-      checkVoteStatus();
-
-      const handleAccountsChanged = function () {
-        connectMetamask();
+      const handleAccountsChanged = async function () {
+        const web3 = new Web3(window.ethereum);
+        // await window.ethereum.request({ method: "eth_requestAccounts" });
+        const accounts = await web3.eth.getAccounts();
+        setAuth(accounts[0]);
       };
 
+      if (auth === null){
+         const callMetamask = async () => {
+          const web3 = new Web3(window.ethereum);
+          // await window.ethereum.request({ method: "eth_requestAccounts" });
+          const accounts = await web3.eth.getAccounts();
+          setAuth(accounts[0]);
+        } 
+        callMetamask()
+      }
       window.ethereum.on("accountsChanged", handleAccountsChanged);
-
-      // Set up an interval to check the status every, for example, 10 seconds
-      const intervalId = setInterval(checkVoteStatus, 5000);
-
-      // Clean up the interval and event listener when the component unmounts
       return () => {
-        clearInterval(intervalId);
         window.ethereum.off("accountsChanged", handleAccountsChanged);
       };
     } catch (error) {
       console.log("error");
     }
-  }, [connectedAccount]); // The empty dependency array ensures that this effect runs only once on mount
+  }, [auth, setAuth]); 
 
   return (
     <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 p-4 text-white">
       <ul className="menu bg-base-200 lg:menu-horizontal rounded-box">
-        <li onClick={() => connectMetamask()}>
-          {connectedAccount !== "null" ? (
+        <li>
+          {auth !== null ? (
             <a>
               <span className="relative flex h-5 w-5">
                 <SignalIcon className="animate-ping absolute inline-flex h-full w-full rounded-full text-sky-400 opacity-75"></SignalIcon>
@@ -91,7 +59,7 @@ export default function NotificationTop() {
           )}
         </li>
         <li>
-          {voteActive ? (
+          {/* {voteActive ? (
             <a>
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -107,7 +75,7 @@ export default function NotificationTop() {
               </span>
               Pemilihan Berakhir
             </a>
-          )}
+          )} */}
         </li>
       </ul>{" "}
     </div>

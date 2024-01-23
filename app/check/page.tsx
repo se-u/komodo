@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { fetchIsVoteActive } from "../../lib/data";
-import Form from "../../ui/home/validate-form";
+import { fetchIsVoteActive } from "../lib/data";
+import Form from "../ui/home/validate-form";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 export default async function Validate() {
   const isActive = await fetchIsVoteActive("");

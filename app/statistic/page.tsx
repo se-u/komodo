@@ -11,13 +11,7 @@ export default async function Statistik() {
     result[candidateName] = Number(candidate.count);
     return result;
   }, {});
-
-  // const isActive = true;
-  // const chartData = {
-  //   sindu: 50,
-  //   jokowi: 12412,
-  // };
-
+ 
   return (
     <div className="bg-slate-200 w-full h-screen">
       {!isActive ? (

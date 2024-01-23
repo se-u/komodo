@@ -1,12 +1,12 @@
+"use client";
 import Hero from "@/app/ui/home/hero";
-import NotificationTop from "./ui/notification";
 import { NavBottom } from "./ui/home/nav-bottom";
+import NavNotification from "./ui/NavNotification";
 
-export default async function Home() {
+export default function Home() {
   return (
     <>
-      <NotificationTop />
-
+    <NavNotification/>
       <Hero />
       <NavBottom />
     </>

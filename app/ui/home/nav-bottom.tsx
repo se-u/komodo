@@ -7,13 +7,14 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { name: "Beranda", href: "/", icon: HomeIcon },
+  { name: "Beranda", href: "/", icon: HomeIcon, prefetch: true },
   {
     name: "Panduan",
-    href: "/guide-all",
+    href: "/faq",
     icon: BookOpenIcon,
+    prefetch: true 
   },
-  { name: "Statistik", href: "/statistic", icon: ChartBarIcon },
+  { name: "Statistik", href: "/statistic", prefetch: true ,icon: ChartBarIcon },
 ];
 
 export function NavBottom() {
@@ -27,6 +28,7 @@ export function NavBottom() {
             <Link
               href={link.href}
               key={link.name}
+              prefetch={link.prefetch}
               className={clsx(
                 "hover:bg-orange-400 hover:text-white hover:font-bold",
                 {

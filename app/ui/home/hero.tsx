@@ -3,12 +3,14 @@ import Link from "next/link";
 import style from "./hero.module.css";
 import Image from "next/image";
 import { Figtree } from "next/font/google";
+import  AuthContext  from "@/app/auth-context";
+import { useContext } from "react";
 /* eslint-disable @next/next/no-img-element */
 
 const figtree = Figtree({ subsets: ["latin"], weight: ["700"] });
 
 export default function Hero() {
-  return (
+ return (
     <div className={`${figtree.className} hero min-h-screen `}>
       <span
         className={`bg-gradient-to-b from-gray-900 to-gray-600 ${style["bg-image"]}  top-0 left-0 w-full h-full`}
@@ -42,5 +44,6 @@ export default function Hero() {
         </div>
       </div>
     </div>
+
   );
 }
