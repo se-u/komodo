@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { fetchIsVoteActive } from "@/app/lib/data";
