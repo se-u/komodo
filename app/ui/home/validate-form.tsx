@@ -1,18 +1,13 @@
 "use client";
+import { AuthContext } from "@/app/auth-context";
 import { navigateBallot, validateVoter } from "@/app/lib/actions";
-import { DocumentCheckIcon } from "@heroicons/react/16/solid";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 
 export default function ValidateForm() {
   const [error, setError] = useState({ error: null });
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [connectedAccount, setConnectedAccount] = useState("null");
-
-  useEffect(() => {
-    const local:any = localStorage.getItem("connectedAccount");
-    setConnectedAccount(local);
-  }, []);
+  const [connectedAccount, _] = useContext(AuthContext);
+  console.log(connectedAccount);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,13 +15,11 @@ export default function ValidateForm() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      const response = await validateVoter(formData, connectedAccount);
+      const response = await validateVoter(formData, connectedAccount || "");
       if (response?.error) {
         setError({ error: response.error });
         setLoading(false);
       } else {
-        console.log("redirect...");
-        // console.log(response);
         navigateBallot(response.uuid);
       }
       console.log(response);
@@ -112,11 +105,6 @@ export default function ValidateForm() {
           </div>
 
           <button type="submit" className="my-5 btn glass w-full">
-            {loading ? (
-              <span className="loading loading-spinner"></span>
-            ) : (
-              <DocumentCheckIcon className="w-5" />
-            )}
             Check Data
           </button>
         </form>

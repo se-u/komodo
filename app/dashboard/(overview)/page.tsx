@@ -3,7 +3,7 @@ import BarChart from "@/app/ui/chart";
 import { fetchCandidates } from "@/app/lib/data";
 export default async function Page() {
   const candidates = await fetchCandidates();
-  // noted
+
   const chartData = candidates.reduce(
     (
       result: { [x: string]: number },

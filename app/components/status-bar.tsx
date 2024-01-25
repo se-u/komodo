@@ -3,12 +3,17 @@ import { SetStateAction, useContext, useEffect, useState } from "react";
 import { SignalIcon } from "@heroicons/react/16/solid";
 import { fetchIsVoteActive } from "../lib/data";
 import Web3 from "web3";
-import AuthContext  from "../auth-context";
+import { AuthContext } from "../auth-context";
+import useSWR from "swr";
 
-export default function NotificationTop() {
-  const [auth,setAuth] = useContext(AuthContext);
-  console.log(auth)
-
+const fetcher = (url: string | URL | Request) =>
+  fetch(url).then((r) => r.json());
+export default function StatusBar() {
+  const { data, error } = useSWR("/api/status", fetcher, {
+    refreshInterval: 1000,
+  });
+  const voteActive = data;
+  const [auth, setAuth] = useContext(AuthContext);
   useEffect(() => {
     try {
       const handleAccountsChanged = async function () {
@@ -18,14 +23,17 @@ export default function NotificationTop() {
         setAuth(accounts[0]);
       };
 
-      if (auth === null){
-         const callMetamask = async () => {
+      if (auth === null) {
+        const callMetamask = async () => {
           const web3 = new Web3(window.ethereum);
-          // await window.ethereum.request({ method: "eth_requestAccounts" });
+          await window.ethereum.request({ method: "eth_requestAccounts" });
           const accounts = await web3.eth.getAccounts();
           setAuth(accounts[0]);
-        } 
-        callMetamask()
+
+          // const isVoteActive = await fetchIsVoteActive("");
+          // console.log(isVoteActive);
+        };
+        callMetamask();
       }
       window.ethereum.on("accountsChanged", handleAccountsChanged);
       return () => {
@@ -34,7 +42,7 @@ export default function NotificationTop() {
     } catch (error) {
       console.log("error");
     }
-  }, [auth, setAuth]); 
+  }, [auth, setAuth]);
 
   return (
     <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 p-4 text-white">
@@ -59,7 +67,7 @@ export default function NotificationTop() {
           )}
         </li>
         <li>
-          {/* {voteActive ? (
+          {voteActive ? (
             <a>
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -75,7 +83,7 @@ export default function NotificationTop() {
               </span>
               Pemilihan Berakhir
             </a>
-          )} */}
+          )}
         </li>
       </ul>{" "}
     </div>

@@ -1,14 +1,16 @@
 import { NavBottom } from "@/app/ui/home/nav-bottom";
+import Image from "next/image";
 
-export default function page() {
+export default async function page() {
   return (
     <div className="container mx-auto px-40 py-20">
-      {/* Section with three images */}
       <div className="flex justify-center gap-6  items-center mb-8">
         {Array.from({ length: 3 }, (_, index) => (
           <div key={index} className="max-w-sm">
             <div className="flex rounded-lg dark:bg-gray-800 bg-teal-400 flex-col">
-              <img
+              <Image
+                width={256}
+                height={256}
                 className="w-full h-64 object-cover rounded-md"
                 src={`/${index + 1}.png`}
                 alt={`Step ${index + 1}`}
@@ -18,7 +20,6 @@ export default function page() {
         ))}
       </div>
 
-      {/* Section with voting process explanation */}
       <div className="max-w-md mb-8">
         <h2 className="text-2xl font-bold mb-4">Panduan Voting Blockchain</h2>
         <p className="mb-4">

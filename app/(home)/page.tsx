@@ -1,19 +1,15 @@
 import { PaperAirplaneIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
-import style from "./hero.module.css";
 import Image from "next/image";
 import { Figtree } from "next/font/google";
-import  AuthContext  from "@/app/auth-context";
-import { useContext } from "react";
-/* eslint-disable @next/next/no-img-element */
 
 const figtree = Figtree({ subsets: ["latin"], weight: ["700"] });
 
-export default function Hero() {
- return (
+export async function Hero() {
+  return (
     <div className={`${figtree.className} hero min-h-screen `}>
       <span
-        className={`bg-gradient-to-b from-gray-900 to-gray-600 ${style["bg-image"]}  top-0 left-0 w-full h-full`}
+        className={`bg-gradient-to-b from-gray-900 to-gray-600 bg-image  top-0 left-0 w-full h-full`}
       ></span>
       <div className="absolute inset-0 bg-cover bg-center blur-sm"></div>
       <div className="container mx-auto p-8 lg:p-16 flex justify-between items-center  z-10">
@@ -26,7 +22,7 @@ export default function Hero() {
             Klik, Pilih, Aman. Demokrasi Tanpa Keraguan 👋
           </h2>
 
-          <Link href={"/guide"}>
+          <Link href={"/guide"} prefetch={true}>
             <button className="btn glass btn-lg text-white">
               <PaperAirplaneIcon className="w-6" />
               Mulai Memilih
@@ -44,6 +40,13 @@ export default function Hero() {
         </div>
       </div>
     </div>
+  );
+}
 
+export default function Home() {
+  return (
+    <>
+      <Hero />
+    </>
   );
 }

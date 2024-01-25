@@ -254,6 +254,7 @@ export async function fetchIsVoteActive(account: string) {
     console.log(error);
     return { error: "Ops Ada kesalahan" };
   }
+  // revalidatePath(`/`);
 }
 
 export async function fetchAdmins() {

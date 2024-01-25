@@ -241,7 +241,7 @@ export async function toggleActive() {
     console.log(error);
     return { error: "Ops Ada kesalahan" };
   }
-  // revalidatePath("/", "layout");
+  revalidatePath("/");
 }
 
 export type ErorrVoter = {
