@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button } from "../button";
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { fetchIsVoteActive } from "@/app/lib/data";
 import { toggleActive } from "@/app/lib/actions";
 
@@ -24,14 +24,18 @@ export default function SettingsForm() {
   return (
     <>
       <div className="mb-4">
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-2 bg-white rounded-2xl shadow p-4">
           <div className="text-left">Sistem Pemilihan On/Off</div>
+          <div className="flex items-center space-x-2">
+            <Switch id="airplane-mode"/>
+            <Label htmlFor="airplane-mode">Election On/Off</Label>
+          </div>
           <div className="text-right">
             <input
-              type="checkbox"
-              className="toggle"
-              checked={voteActive}
-              onChange={handleToggle}
+                type="checkbox"
+                className="toggle"
+                checked={voteActive}
+                onChange={handleToggle}
             />
           </div>
         </div>
