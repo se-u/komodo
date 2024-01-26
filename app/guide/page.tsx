@@ -13,58 +13,6 @@ const guides = [
   { img: "special", title: "", desc: "Pastikan kamu sudah paham cara memilih" },
 ];
 
-function GuideCard() {
-  return (
-    <>
-      <div className="hero flex flex-col">
-        <div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 justify-center mt-10">
-            <div className="max-w-sm">
-              <div className="flex rounded-lg dark:bg-gray-800 bg-teal-400 flex-col">
-                <Image
-                  width={500}
-                  height={500}
-                  className="w-full h-auto object-cover rounded-md"
-                  src="/1.png"
-                  blurDataURL={"/1.png"}
-                  placeholder="blur"
-                  alt="Masukkan Data diri"
-                />
-              </div>
-            </div>
-            <div className="max-w-sm">
-              <div className="flex rounded-lg dark:bg-gray-800 bg-teal-400 flex-col">
-                <Image
-                  width={500}
-                  height={500}
-                  blurDataURL={"/2.png"}
-                  placeholder="blur"
-                  className="w-full h-auto object-cover rounded-md"
-                  src="/2.png"
-                  alt="Menunggu Vertifikasi"
-                />
-              </div>
-            </div>
-            <div className="max-w-sm">
-              <div className="flex rounded-lg dark:bg-gray-800 bg-teal-400 flex-col">
-                <Image
-                  width={500}
-                  height={500}
-                  blurDataURL={"/3.png"}
-                  placeholder="blur"
-                  className="w-full h-auto object-cover rounded-md"
-                  src="/3.png"
-                  alt="Pilih Kandidat"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
 export default function Guide({ params }: { params: { index: string } }) {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -85,20 +33,6 @@ export default function Guide({ params }: { params: { index: string } }) {
     <>
       {!loading ? (
         <div className="bg-white">
-          {/* {step < 3 ? (
-          <button
-            onClick={handleNext}
-            className="fixed right-0 top-[45%] z-50 bg-white text-2xl text-black hover:text-indigo-400 focus:text-indigo-400  focus:outline-none focus:shadow-outline"
-          >
-            <div className="flex">
-              <span>Selanjutnya</span>
-              <span className="block">&#x279c;</span>
-            </div>
-          </button>
-        ) : (
-          ""
-        )}  */}
-
           <div className="relative isolate px-6 lg:px-8">
             <PolygonBlur />
 
@@ -111,7 +45,7 @@ export default function Guide({ params }: { params: { index: string } }) {
                   id="carousel-1"
                   checked
                 />
-                <div className="max-w-4xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                <div className="max-w-4xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
                   {step !== 3 ? (
                     <>
                       <Image
@@ -119,33 +53,26 @@ export default function Guide({ params }: { params: { index: string } }) {
                         width={500}
                         className="rounded-t-lg object-cover"
                         src={guides[step].img}
-                        alt=""
+                        alt={guides[step].title}
                       />
-                      <div className="py-4 px-8 text-center">
-                        <h1 className="hover:cursor-pointer mt-2 text-gray-900 font-bold text-2xl tracking-tight">
+                      <div className="py-4 px-8 text-center dark:text-white text-gray-900">
+                        <h1 className="hover:cursor-pointer mt-2 font-bold text-2xl tracking-tight">
                           {guides[step].title}
                         </h1>
-                        <p className="hover:cursor-pointer py-3 text-gray-600 leading-6">
+                        <p className="hover:cursor-pointer py-3 text-gray-600 dark:text-slate-300 leading-6">
                           {guides[step].desc}
                         </p>
                       </div>
                     </>
                   ) : (
                     <>
-                      {/* <Image
-                    height={400}
-                    width={500}
-                    className="rounded-t-lg object-cover"
-                    src={guides[step].img}
-                    alt=""
-                  /> */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        className="w-32 h-32 mx-auto text-indigo-500"
+                        className="w-32 h-32 mx-auto text-blue-600 dark:text-blue-500"
                       >
                         <path
                           stroke-linecap="round"
@@ -155,19 +82,19 @@ export default function Guide({ params }: { params: { index: string } }) {
                       </svg>
 
                       <div className="py-8 px-8 text-center">
-                        <h1 className="hover:cursor-pointer text-gray-900 font-bold text-2xl tracking-tight">
+                        <h1 className="hover:cursor-pointer text-gray-900 dark:text-slate-200 font-bold text-2xl tracking-tight">
                           Apakah Kamu Sudah Siap Memilih?
                         </h1>
-                        <p className="hover:cursor-pointer py-3 text-gray-600 leading-6">
+                        <p className="hover:cursor-pointer py-3 text-gray-600 dark:text-slate-300 leading-6">
                           {guides[step].desc}
                         </p>
 
                         <Link href={"/check"} className="block">
                           <button
                             onClick={() => setLoading(true)}
-                            className="group relative h-12 w-full overflow-hidden rounded-sm bg-white text-lg shadow"
+                            className="group relative h-12 w-full overflow-hidden rounded bg-white text-lg shadow"
                           >
-                            <div className="absolute inset-0 w-[0px] bg-green-400 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+                            <div className="absolute inset-0 w-[0px] bg-green-500 dark:bg-green-600 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
                             <span className="relative text-black group-hover:text-white">
                               Ya! Siap.
                             </span>
@@ -177,12 +104,12 @@ export default function Guide({ params }: { params: { index: string } }) {
                     </>
                   )}
                   <div className="absolute top-1/2 w-full flex justify-between z-20">
-                    <label className="inline-block text-indigo-600 cursor-pointer -translate-x-9 bg-white rounded-full shadow-md active:translate-y-0.5">
+                    <label className="inline-block text-gray-800 cursor-pointer -translate-x-9 bg-white rounded-full shadow-md active:translate-y-0.5">
                       {step >= 1 ? (
                         <svg
                           onClick={handlePrev}
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-12 w-12"
+                          className="h-14 w-14"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -197,12 +124,12 @@ export default function Guide({ params }: { params: { index: string } }) {
                       )}
                     </label>
 
-                    <label className="inline-block text-indigo-600 cursor-pointer translate-x-9 bg-white rounded-full shadow-md active:translate-y-0.5">
+                    <label className="inline-block text-gray-800 cursor-pointer translate-x-9 bg-white rounded-full shadow-md active:translate-y-0.5">
                       {step < 3 ? (
                         <svg
                           onClick={handleNext}
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-12 w-12"
+                          className="h-14 w-14"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
