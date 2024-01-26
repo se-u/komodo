@@ -4,29 +4,12 @@ import Ballot from "@/app/ui/ballot/ballot";
 import { useEffect, useState } from "react";
 const VerificationLoading = () => {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="relative w-16 h-16">
-        {/* Outer petals */}
-        <div className="absolute w-16 h-16 bg-blue-500 rounded-full"></div>
-        <div className="absolute w-16 h-16 bg-blue-500 rounded-full transform rotate-45"></div>
-        <div className="absolute w-16 h-16 bg-blue-500 rounded-full transform rotate-90"></div>
-        <div className="absolute w-16 h-16 bg-blue-500 rounded-full transform rotate-135"></div>
-
-        {/* Inner petals */}
-        <div className="absolute w-8 h-8 bg-white rounded-full"></div>
-        <div className="absolute w-8 h-8 bg-white rounded-full transform rotate-45"></div>
-        <div className="absolute w-8 h-8 bg-white rounded-full transform rotate-90"></div>
-        <div className="absolute w-8 h-8 bg-white rounded-full transform rotate-135"></div>
-
-        {/* Center */}
-        <div className="absolute w-4 h-4 bg-blue-700 rounded-full top-6 left-6"></div>
-      </div>
-
-      <div className="ml-4">
-        <div className="animate-spin inline-block w-12 h-12 border-t-4 border-blue-500 border-solid rounded-full"></div>
-        <p className="ml-2 text-gray-200 text-lg">Menunggu Verifikasi</p>
-        <p className="mt-2 text-sm text-gray-500">
-          Silahkan hubungi petugas terkait untuk informasi lebih lanjut.
+    <div className="flex items-center justify-center h-screen text-center">
+      <div className="">
+        <div className="animate-spin inline-block w-12 h-12 border-t-4 border-black border-solid rounded-full"></div>
+        <p className="text-xl font-semibold">Menunggu Verifikasi</p>
+        <p className="mt-2 text-lg text-gray-500">
+          Jika Dalam 1 Menit Tidak Terverifikasi Sialah Hubungi Petugas
         </p>
       </div>
     </div>
@@ -36,7 +19,7 @@ const VerificationLoading = () => {
 export default function Page({ params }: { params: { id: string } }) {
   const [voter, setVoter] = useState({
     isRegistered: "any",
-    isVerified: "any",
+    isVerified: false,
     id: "any",
     name: "any",
     idCard: "any",
@@ -58,6 +41,6 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id]);
 
   return (
-    <>{voter?.isVerified ? <Ballot uuid={id} /> : <VerificationLoading />}</>
+    <>{!voter?.isVerified ? <VerificationLoading /> : <Ballot uuid={id} />}</>
   );
 }

@@ -1,7 +1,12 @@
+//<<<<<<< sindu/ui-admin
 import type { Config } from "tailwindcss"
 
 const config = {
   darkMode: ["class"],
+//=======
+import type { Config } from "tailwindcss";
+const config: Config = {
+//>>>>>>> master
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -18,6 +23,7 @@ const config = {
       },
     },
     extend: {
+//<<<<<<< sindu/ui-admin
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +63,14 @@ const config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+//=======
+      
+      dropShadow: {
+        glow: [
+          "0 0px 20px rgba(255,255, 255, 0.10)",
+          "0 0px 65px rgba(255, 255,255, 0.15)",
+        ],
+//>>>>>>> master
       },
       keyframes: {
         "accordion-down": {
@@ -74,7 +88,13 @@ const config = {
       },
     },
   },
+//<<<<<<< sindu/ui-admin
   plugins: [require("tailwindcss-animate")],
 } satisfies Config
 
 export default config
+//=======
+  plugins: [],
+};
+export default config;
+//>>>>>>> master
