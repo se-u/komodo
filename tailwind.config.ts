@@ -1,16 +1,4 @@
-// import daisyui from "daisyui";
-
-// /** @type {import('tailwindcss').Config} */
-// module.exports = {
-
-//   theme: {
-//     extend: {},
-//   },
-//   plugins: [daisyui],
-// };
-
 import type { Config } from "tailwindcss";
-import daisyui from "daisyui";
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -23,6 +11,7 @@ const config: Config = {
 
   theme: {
     extend: {
+      
       dropShadow: {
         glow: [
           "0 0px 20px rgba(255,255, 255, 0.10)",
@@ -36,10 +25,6 @@ const config: Config = {
       },
     },
   },
-  // daisyui: {
-  //   themes: ["light"],
-  // },
-  // plugins: [],
-  plugins: [daisyui],
+  plugins: [],
 };
 export default config;

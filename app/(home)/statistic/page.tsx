@@ -2,20 +2,25 @@ import BarChart from "@/app/ui/chart";
 import { fetchCandidates, fetchIsVoteActive } from "../../lib/data";
 import { ClockIcon } from "@heroicons/react/20/solid";
 import { Suspense } from "react";
+import { number } from "zod";
 
 export const Chart = async () => {
   const voteActive = await fetchIsVoteActive("");
   const candidates = await fetchCandidates();
-  const chartData = candidates.reduce(
-    (
-      result: { [x: string]: number },
-      candidate: { name: string; count: any }
-    ) => {
-      const candidateName = candidate.name.trim().toLowerCase();
-      result[candidateName] = Number(candidate.count);
-      return result;
-    }
-  );
+  let chartData = [];
+  if (candidates.length !== 0) {
+    chartData = candidates.reduce(
+      (
+        result: { [x: string]: number },
+        candidate: { name: string; count: any }
+      ) => {
+        const candidateName = candidate.name.trim().toLowerCase();
+        result[candidateName] = Number(candidate.count);
+        return result;
+      }
+    );
+  }
+
   return (
     <>
       {!voteActive ? (

@@ -1,10 +1,13 @@
 export default function Loading() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-white-900">
-        {" "}
+    <div className="flex items-center justify-center h-screen text-center">
+      <div className="">
+        <div className="animate-spin inline-block w-12 h-12 border-t-4 border-black border-solid rounded-full"></div>
+        <p className="text-xl font-semibold">Menunggu Verifikasi</p>
+        <p className="mt-2 text-sm text-gray-500">
+          Kami memerlukan sedikit waktu untuk menyelesaikan proses anda
+        </p>
       </div>
-      <h2>Mohon Menunggu</h2>
     </div>
   );
 }

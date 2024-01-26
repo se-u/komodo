@@ -1,4 +1,3 @@
-import { NavBottom } from "@/app/ui/home/nav-bottom";
 import Image from "next/image";
 
 export default async function page() {
@@ -58,7 +57,6 @@ export default async function page() {
           </div>
         ))}
       </div>
-      <NavBottom />
     </div>
   );
 }

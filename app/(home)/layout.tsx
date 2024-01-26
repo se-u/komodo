@@ -1,4 +1,4 @@
-import { NavBottom } from "../ui/home/nav-bottom";
+import BottomNav from "../ui/home/nav-bottom";
 
 export default function HomeLayout({
   children,
@@ -8,7 +8,7 @@ export default function HomeLayout({
   return (
     <>
       {children}
-      <NavBottom />
+      <BottomNav />
     </>
   );
 }

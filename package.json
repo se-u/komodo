@@ -37,6 +37,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "hardhat": "^2.19.4",
+    "html5-qrcode": "^2.3.8",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.7.0",

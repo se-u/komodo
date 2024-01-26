@@ -17,18 +17,22 @@ export default function StatusBar() {
   const [auth, setAuth] = useContext(AuthContext);
   console.log(auth);
   const handleConnect = async () => {
-    const web3 = new Web3(window.ethereum);
-    await window.ethereum.request({ method: "eth_requestAccounts" });
-    const accounts = await web3.eth.getAccounts();
-    setAuth(accounts[0]);
+    if (window) {
+      const web3 = new Web3(window.ethereum);
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const accounts = await web3.eth.getAccounts();
+      setAuth(accounts[0]);
+    }
   };
 
   useEffect(() => {
+    handleConnect();
     window.ethereum.on("accountsChanged", handleConnect);
     return () => {
       window.ethereum.off("accountsChanged", handleConnect);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth]);
 
   return (
     <div className="fixed top-0 left-0 bg-white z-50">
@@ -36,12 +40,12 @@ export default function StatusBar() {
       {auth !== null ? (
         <>
           <p>{auth}</p>
-          <button onClick={() => setAuth(null)} className="bg-black">
+          <button onClick={() => setAuth(null)} className="bg-purple-300">
             Sign Out
           </button>
         </>
       ) : (
-        <button onClick={handleConnect} className="bg-black">
+        <button onClick={handleConnect} className="bg-purple-300">
           Sign In
         </button>
       )}
