@@ -6,7 +6,7 @@ import CreateCandidate from "@/app/ui/settingButton";
 import AdminForm from "@/app/ui/setting/admin-form";
 
 export default async function Page() {
-  const candidates = await fetchCandidates();
+  const candidates: any = await fetchCandidates();
 
   return (
     <>

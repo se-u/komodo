@@ -2,10 +2,11 @@ import { fetchVoters } from "../../lib/data";
 import { clsx } from "clsx";
 import { CheckIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { DeleteVoter, UpdateVoter, VerifyVoter } from "../buttons";
+import { JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal } from "react";
 
 export default async function VoterTable({ query }: { query: string }) {
   const _voters = await fetchVoters();
-  let voters = _voters.filter((voter) => {
+  let voters = _voters.filter((voter: { name: string; idCard: string; }) => {
     return (
       voter.name.toLowerCase().includes(query.toLowerCase()) ||
       voter.idCard.toLowerCase().includes(query.toLowerCase())
@@ -17,7 +18,7 @@ export default async function VoterTable({ query }: { query: string }) {
         <div className="inline-block min-w-full align-middle">
           <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
             <div className="md:hidden">
-              {voters?.map((voter) => (
+              {voters?.map((voter: { index: Key | null | undefined; }) => (
                 <div
                   key={voter.index}
                   className="mb-2 w-full rounded-md bg-white p-4"
@@ -72,7 +73,7 @@ export default async function VoterTable({ query }: { query: string }) {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {voters?.map((voter) => (
+                {voters?.map((voter: { index: Key | null | undefined; name: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | PromiseLikeOfReactNode | null | undefined; idCard: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | PromiseLikeOfReactNode | null | undefined; isVerified: boolean; id: string; }) => (
                   <tr
                     key={voter.index}
                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"

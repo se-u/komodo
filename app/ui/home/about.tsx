@@ -1,11 +1,11 @@
 "use client";
-import { fetchCanditates } from "@/app/lib/data";
+import { fetchCandidates } from "@/app/lib/data";
 import styles from "./about.module.css";
 import { useCallback } from "react";
 
 export default function AboutJumbotron() {
   const _fetchCandidate = useCallback(async () => {
-    const result = await fetchCanditates();
+    const result = await fetchCandidates();
     console.log(result);
   }, []);
   _fetchCandidate();

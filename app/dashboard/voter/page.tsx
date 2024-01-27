@@ -21,7 +21,7 @@ export default async function Page({
         <CreateVoter />
       </div>
       <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={1} />
+        <Table query={query} />
       </Suspense>
       {/* <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={12} />
