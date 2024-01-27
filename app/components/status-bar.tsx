@@ -36,6 +36,7 @@ export default function StatusBar() {
 
   return (
 <<<<<<< HEAD
+<<<<<<< HEAD
       <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 p-4 text-white rounded-full shadow-lg">
         <ul className="flex space-x-4 bg-base-200 lg:menu-horizontal rounded-box">
           <li className="flex items-center">
@@ -83,6 +84,8 @@ export default function StatusBar() {
       </div>
 
 =======
+=======
+>>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
     <div className="fixed top-0 left-0 bg-white z-50">
       <p className="text-red-500">!JUST DEV TOOLS!</p>
       {auth !== null ? (
@@ -100,6 +103,9 @@ export default function StatusBar() {
 
       {voteActive ? "Terhubung" : "Tidak Terhubung"}
     </div>
+<<<<<<< HEAD
+>>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
+=======
 >>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
   );
 }
