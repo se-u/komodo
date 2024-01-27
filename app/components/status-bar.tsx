@@ -35,6 +35,57 @@ export default function StatusBar() {
   }, [auth]);
 
   return (
+<<<<<<< HEAD
+<<<<<<< HEAD
+      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 p-4 text-white rounded-full shadow-lg">
+        <ul className="flex space-x-4 bg-base-200 lg:menu-horizontal rounded-box">
+          <li className="flex items-center">
+            {auth !== null ? (
+                <a className="flex items-center">
+          <span className="relative flex h-5 w-5">
+            <SignalIcon
+                className="animate-ping absolute inline-flex h-full w-full rounded-full text-sky-400 opacity-75"></SignalIcon>
+            <SignalIcon className="relative inline-flex rounded-full h-5 w-5 text-sky-500"></SignalIcon>
+          </span>
+                  <span className="ml-2 font-bold text-blue-500">Terhubung Ke Sistem</span>
+                </a>
+            ) : (
+                <a className="flex items-center">
+          <span className="relative flex h-5 w-5">
+            <SignalIcon
+                className="animate-ping absolute inline-flex h-full w-full rounded-full text-yellow-400 opacity-75"></SignalIcon>
+            <SignalIcon className="relative inline-flex rounded-full h-5 w-5 text-yellow-500"></SignalIcon>
+          </span>
+                  <span className="ml-2 font-bold text-blue-500">Menghubungkan ke sistem ...</span>
+                </a>
+            )}
+          </li>
+          <li className="flex items-center">
+            {voteActive ? (
+                <a className="flex items-center">
+          <span className="relative flex h-3 w-3">
+            <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
+                  <span className="ml-2 font-bold text-green-500">Pemilihan Berlansung</span>
+                </a>
+            ) : (
+                <a className="flex items-center">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+          </span>
+                  <span className="ml-2 font-bold text-red-500">Pemilihan Berakhir</span>
+                </a>
+            )}
+          </li>
+        </ul>
+      </div>
+
+=======
+=======
+>>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
     <div className="fixed top-0 left-0 bg-white z-50">
       <p className="text-red-500">!JUST DEV TOOLS!</p>
       {auth !== null ? (
@@ -52,5 +103,9 @@ export default function StatusBar() {
 
       {voteActive ? "Terhubung" : "Tidak Terhubung"}
     </div>
+<<<<<<< HEAD
+>>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
+=======
+>>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
   );
 }
