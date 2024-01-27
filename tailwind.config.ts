@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const { fontFamily } = require("tailwindcss/defaultTheme")
 
 /** @type {import('tailwindcss').Config} */
@@ -6,6 +7,8 @@ module.exports = {
   darkMode: ["class"],
   content: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
 =======
+=======
+>>>>>>> 24d294d8680d4fb6f8e04b85973df0daef54c8b8
 //<<<<<<< sindu/ui-admin
 import type { Config } from "tailwindcss"
 
@@ -22,13 +25,17 @@ const config: Config = {
     './src/**/*.{ts,tsx}',
 	],
   prefix: "",
+<<<<<<< HEAD
 >>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
+=======
+>>>>>>> 24d294d8680d4fb6f8e04b85973df0daef54c8b8
   theme: {
     container: {
       center: true,
       padding: "2rem",
       screens: {
         "2xl": "1400px",
+<<<<<<< HEAD
 <<<<<<< HEAD
       },
     },
@@ -82,6 +89,11 @@ const config: Config = {
       },
     },
     extend: {
+=======
+      },
+    },
+    extend: {
+>>>>>>> 24d294d8680d4fb6f8e04b85973df0daef54c8b8
 //<<<<<<< sindu/ui-admin
       colors: {
         border: "hsl(var(--border))",
@@ -131,7 +143,10 @@ const config: Config = {
         ],
 //>>>>>>> master
       },
+<<<<<<< HEAD
 >>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
+=======
+>>>>>>> 24d294d8680d4fb6f8e04b85973df0daef54c8b8
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -149,9 +164,12 @@ const config: Config = {
     },
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
   plugins: [require("tailwindcss-animate")],
 }
 =======
+=======
+>>>>>>> 24d294d8680d4fb6f8e04b85973df0daef54c8b8
 //<<<<<<< sindu/ui-admin
   plugins: [require("tailwindcss-animate")],
 } satisfies Config
@@ -162,4 +180,7 @@ export default config
 };
 export default config;
 //>>>>>>> master
+<<<<<<< HEAD
 >>>>>>> 26bfa669244240e50331d915ff4ce68c4abd0c62
+=======
+>>>>>>> 24d294d8680d4fb6f8e04b85973df0daef54c8b8
