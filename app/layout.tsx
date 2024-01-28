@@ -27,6 +27,7 @@ export default function RootLayout({
         >
           <AuthProvider>
             <StatusBar />
+
             {children}
           </AuthProvider>
         </ThemeProvider>

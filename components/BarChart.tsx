@@ -6,7 +6,7 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Bar
+  Bar,
 } from "recharts";
 
 type Props = {};
@@ -14,15 +14,15 @@ type Props = {};
 const data = [
   {
     name: "Sindu",
-    total: Math.floor(Math.random() * 5000) + 1000
+    total: Math.floor(Math.random() * 5000) + 1000,
   },
   {
     name: "Sebastian",
-    total: Math.floor(Math.random() * 5000) + 1000
+    total: Math.floor(Math.random() * 5000) + 1000,
   },
   {
     name: "Aydin",
-    total: Math.floor(Math.random() * 5000) + 1000
+    total: Math.floor(Math.random() * 5000) + 1000,
   },
 ];
 
@@ -42,7 +42,7 @@ export default function BarChart({}: Props) {
           axisLine={false}
           stroke="#888888"
           fontSize={12}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `${value}`}
         />
         <Bar dataKey={"total"} radius={[4, 4, 0, 0]} />
       </BarGraph>

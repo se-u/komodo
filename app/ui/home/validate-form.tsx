@@ -31,12 +31,12 @@ export default function ValidateForm() {
   return (
     <>
       {error.error !== null ? (
-        <div role="alert" className="w-72 alert shadow-lg fixed z-50">
+        <div role="alert" className="alert fixed z-50 w-72 shadow-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            className="stroke-info shrink-0 w-6 h-6"
+            className="stroke-info h-6 w-6 shrink-0"
           >
             <path
               strokeLinecap="round"
@@ -58,13 +58,14 @@ export default function ValidateForm() {
           </button>
         </div>
       ) : null}
-      <div className="flex justify-center m-12 text-white">
+      <div className="m-12 flex justify-center text-white">
         <form onSubmit={handleSubmit}>
-          <div className="glass shadow-lg px-8 py-10 rounded-md text-white">
+          <div className="glass rounded-md px-8 py-10 text-white shadow-lg">
             <label className="form-control w-full max-w-xs">
               <div className="label">
                 <span className="label-text">Nama</span>
               </div>
+
               <input
                 name="name"
                 type="text"
@@ -104,7 +105,7 @@ export default function ValidateForm() {
             </label>
           </div>
 
-          <button type="submit" className="my-5 btn glass w-full">
+          <button type="submit" className="btn glass my-5 w-full">
             Check Data
           </button>
         </form>

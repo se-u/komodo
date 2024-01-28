@@ -52,7 +52,7 @@ export function Menu() {
   }, []);
   return (
     //   {voteActive ? "Terhubung" : "Tidak Terhubung"}
-    <Menubar className="rounded-none border-b border-none px-2 lg:px-4">
+    <Menubar className="rounded-none border-b border-none px-2 lg:px-4 ">
       <MenubarMenu>
         <MenubarTrigger className="font-bold">Gerbang Suara</MenubarTrigger>
         <MenubarContent>
@@ -246,6 +246,26 @@ export function Menu() {
           )}
         </MenubarContent>
       </MenubarMenu>
+
+      <div style={{ marginLeft: "auto" }}>
+        {voteActive ? (
+          <a className="flex items-center text-sm">
+            <span className="relative mx-2 flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500"></span>
+            </span>
+            Aktif{" "}
+          </a>
+        ) : (
+          <a className="flex items-center text-sm">
+            <span className="relative mx-2 flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+            </span>
+            Tidak Aktif
+          </a>
+        )}
+      </div>
     </Menubar>
   );
 }

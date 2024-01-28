@@ -8,19 +8,30 @@ import { navigateBallot, validateVoter } from "@/app/lib/actions";
 import { AuthContext } from "@/app/auth-context";
 import Html5QrcodePlugin from "@/app/components/scanner";
 import { PolygonBlur, PolygonBlurSecond } from "@/app/(home)/page";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen text-center">
+    <div className="flex h-screen items-center justify-center text-center">
       <div className="">
-        <div className="animate-bounce inline-block w-20 h-20">
+        <div className="inline-block h-20 w-20 animate-bounce">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            className="w-full h-full"
+            className="h-full w-full"
           >
             <path
               stroke-linecap="round"
@@ -46,15 +57,15 @@ export async function ValidateForm() {
       {isActive ? (
         <Form />
       ) : (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex h-screen items-center justify-center">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-red-500 mb-4">
+            <h1 className="mb-4 text-4xl font-bold text-red-500">
               Akses Ditutup
             </h1>
-            <p className="text-slate-200 mb-4">Pemilihan Telah Berakhir</p>
+            <p className="mb-4 text-slate-200">Pemilihan Telah Berakhir</p>
             <Link href="/">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                <ArrowLeftIcon className="w-6 h-6 mr-2" />
+              <button className="flex items-center rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+                <ArrowLeftIcon className="mr-2 h-6 w-6" />
                 Kembali
               </button>
             </Link>
@@ -68,6 +79,8 @@ export async function ValidateForm() {
 export default function Validate() {
   const [connectedAccount, _] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   console.log(connectedAccount);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -81,9 +94,9 @@ export default function Validate() {
         navigateBallot(response.uuid);
       }
       console.log(response);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      console.error(error);
+      setError(true);
     }
   };
 
@@ -93,39 +106,47 @@ export default function Validate() {
   };
   return (
     <>
-      <div className="absolute top-0 right-0 w-full">
+      <AlertDialog open={error} onOpenChange={setError}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Maaf Permintaan Tidak Dapat Kami Proses
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Maaf anda sudah melakukan voting atau sudah terdaftar
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Mengerti</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <div className="absolute right-0 top-0 w-full">
         <PolygonBlur />
-        <div className="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-        <div className="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
+        <div className="absolute -right-0 -top-40 h-80 w-80 rounded-full border-4 border-t-8 border-opacity-30"></div>
+        <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full border-4 border-t-8 border-opacity-30"></div>
       </div>
       {!loading ? (
-        <div className="h-screen md:flex">
-          {/* bg-gradient-to-tr from-blue-800 to-purple-700 */}
-          {/* bg-gradient-to-tr from-blue-800 to-purple-700 i  */}
-          <div className="relative overflow-hidden md:flex w-1/2 justify-around items-center hidden">
+        <div className="min-w-s h-screen md:flex">
+          <div className="relative hidden w-1/2 items-center justify-around overflow-hidden md:flex">
             <div className="z-10 m-5">
-              <div className="bg-slate rounded-md bg-slate-100 p-5">
-                <Html5QrcodePlugin
-                  fps={10}
-                  qrbox={250}
-                  disableFlip={false}
-                  qrCodeSuccessCallback={onNewScanResult}
-                />
+              <div className="rounded-md p-5">
+                <img src={"/hero-check.png"} />
               </div>
             </div>
-            <div className="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-            <div className="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
+            <div className="absolute -bottom-32 -left-40 h-80 w-80 rounded-full border-4 border-t-8 border-opacity-30"></div>
+            <div className="absolute -bottom-40 -left-20 h-80 w-80 rounded-full border-4 border-t-8 border-opacity-30"></div>
           </div>
 
-          <div className="flex md:w-1/2 justify-center py-10 items-center  bg-white">
+          <div className="flex items-center justify-center bg-white py-10  md:w-1/2">
             <form className="w-3/4" onSubmit={handleSubmit}>
-              <h1 className="text-gray-800 font-bold text-2xl mb-1">
-                Halo, Selamat Datang
+              <h1 className="mb-1 text-2xl font-bold text-gray-800">
+                Verifikasi Data Pemilih
               </h1>
-              <p className="text-sm font-normal text-gray-600 mb-7">
+              <p className="mb-7 text-sm font-normal text-gray-600">
                 Silahkan masukan data diri anda dengan benar.
               </p>
-              <div className="flex items-center border-2 py-2 px-3 rounded mb-4">
+              <div className="mb-4 flex items-center rounded border-2 px-3 py-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-400"
@@ -139,13 +160,13 @@ export default function Validate() {
                   />
                 </svg>
                 <input
-                  className="pl-2 outline-none w-full bg-transparent text-black"
+                  className="w-full bg-transparent pl-2 text-black outline-none"
                   type="text"
                   name="name"
                   placeholder="Nama Lengkap"
                 />
               </div>
-              <div className="flex items-center border-2 py-2 px-3 rounded mb-4">
+              <div className="mb-4 flex items-center rounded border-2 px-3 py-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-400"
@@ -161,7 +182,7 @@ export default function Validate() {
                   />
                 </svg>
                 <input
-                  className="pl-2 outline-none border-none w-full bg-transparent text-black"
+                  className="w-full border-none bg-transparent pl-2 text-black outline-none"
                   type="text"
                   name="idCard"
                   id=""
@@ -194,7 +215,7 @@ export default function Validate() {
 
               <button
                 type="submit"
-                className="block w-full bg-black mt-4 py-2 rounded text-white font-semibold mb-2"
+                className="mb-2 mt-4 block w-full rounded bg-black py-2 font-semibold text-white"
               >
                 Verifikasi
               </button>
@@ -213,7 +234,7 @@ export default function Validate() {
   // <div
   //   className="flex items-center w-full h-screen justify-center"
   //   style={{
-  //     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url('/prambanan.jpg')`,
+  //     backgroundImage: `linear - gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url('/prambanan.jpg')`,
   //     backgroundBlendMode: "multiply",
   //     backgroundSize: "cover",
   //     backgroundPosition: "center",

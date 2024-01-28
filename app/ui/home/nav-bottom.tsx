@@ -29,7 +29,7 @@ export default function BottomNav() {
   "use client";
   const path = usePathname();
   return (
-    <section className="block fixed inset-x-0 bottom-0 z-10 bg-slate-50 dark:bg-black shadow border-t-2">
+    <section className="block fixed inset-x-0 bottom-0 z-10 bg-slate-50 shadow border-t-2 backdrop-filter backdrop-blur-lg bg-opacity-30">
       <div id="tabs" className="flex justify-between">
         {links.map((link) => {
           const LinkIcon = link.icon;
@@ -38,8 +38,10 @@ export default function BottomNav() {
               key={link.name}
               href={link.href}
               className={clsx(
-                "w-full text-gray-800 dark:text-gray-200 focus:text-indigo-500 hover:text-indigo-500 justify-center inline-block text-center pt-2 pb-1",
-                path === link.href ? "text-indigo-600 dark:text-blue-400" : ""
+                "w-full  focus:text-blue-500 hover:text-blue-500 justify-center inline-block text-center pt-2 pb-1",
+                path === link.href
+                  ? "text-blue-600  dark:text-blue-400"
+                  : "text-gray-800 dark:text-gray-200"
               )}
             >
               <LinkIcon className="w-[25px] h-[25px] inline-block mb-1" />

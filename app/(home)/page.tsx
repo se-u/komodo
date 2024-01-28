@@ -1,59 +1,8 @@
 import { PaperAirplaneIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import Image from "next/image";
-import { Figtree } from "next/font/google";
 import { Button } from "@/components/ui/button";
-
-const figtree = Figtree({ subsets: ["latin"], weight: ["700"] });
-
-export async function Hero() {
-  return (
-    <>
-      <div className="absolute inset-0 bg-cover bg-center blur-sm"></div>
-      <div className="container mx-auto p-8 lg:p-16 flex justify-between items-center  z-10">
-        <div className="text-center lg:text-left lg:w-1/2 text-white">
-          <h1 className="text-6xl my-2 text-orange-400 drop-shadow-glow">
-            Gerbang Suara
-          </h1>
-          <h2 className="text-5xl my-2">
-            {/* <span className="bg-gradient-to-r from-yellow-300 to-transparent absolute top-0 left-0 w-full h-full"></span> */}
-            Klik, Pilih, Aman. Demokrasi Tanpa Keraguan 👋
-          </h2>
-
-          <Link href={"/guide"} prefetch={true}>
-            <button className="btn glass btn-lg text-white">
-              <PaperAirplaneIcon className="w-6" />
-              Mulai Memilih
-            </button>
-          </Link>
-        </div>
-        <div className="">
-          <Image
-            width={250}
-            height={250}
-            src="/logologin.png"
-            className="max-w-sm rounded-lg"
-            alt="Logo Gerbang Suara"
-          />
-        </div>
-      </div>
-    </>
-  );
-}
-
-function announcement() {
-  return (
-    <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-      <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-        Announcing our next round of funding.
-        <a href="#" className="font-semibold text-indigo-600">
-          <span className="absolute inset-0" aria-hidden="true"></span>
-          Read more <span aria-hidden="true">&rarr;</span>
-        </a>
-      </div>
-    </div>
-  );
-}
+import { Suspense } from "react";
 
 export function PolygonBlur() {
   return (
@@ -71,7 +20,6 @@ export function PolygonBlur() {
     </div>
   );
 }
-
 export function PolygonBlurSecond() {
   return (
     <div
@@ -88,18 +36,17 @@ export function PolygonBlurSecond() {
     </div>
   );
 }
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <div className="bg-inherit">
         <div className="relative isolate px-6 lg:px-8">
           <PolygonBlur />
-
-          <div className="flex justify-between items-center">
-            <div className="flex-col">
+          <div className="flex flex-col items-center justify-between md:flex-row">
+            <div className="order-2 flex-col md:order-1">
               <div className="max-w-2xl py-32 sm:py-48 lg:py-56">
                 <div className="text-left">
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-6xl">
+                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-gray-50">
                     Klik, Pilih, Aman. Demokrasi Tanpa Keraguan 👋
                   </h1>
                   <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-200 ">
@@ -114,12 +61,22 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex-col ">
+            <div className="order-1 flex-col md:order-2 dark:hidden">
               <Image
-                width={250}
-                height={250}
-                src="/logologin.png"
-                className="max-w-sm mx-auto rounded-lg"
+                width={600}
+                height={600}
+                src="/hero-light.svg"
+                className=" mx-auto rounded-lg"
+                alt="Logo Gerbang Suara"
+              />
+            </div>
+
+            <div className="order-1 hidden flex-col md:order-2 dark:flex">
+              <Image
+                width={600}
+                height={600}
+                src="/hero-dark.svg"
+                className=" mx-auto rounded-lg"
                 alt="Logo Gerbang Suara"
               />
             </div>

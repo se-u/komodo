@@ -5,55 +5,9 @@ import { revalidatePath, unstable_noStore } from "next/cache";
 import { deployedAddress } from "./utils";
 import Web3, { ContractExecutionError } from "web3";
 
-// export async function connectToMetaMask() {
-//   // Check if MetaMask is installed
-//   if (typeof window !== "undefined") {
-//     if (typeof window.ethereum !== "undefined") {
-//       try {
-//         const provider = new ethers.BrowserProvider(window.ethereum);
-//         await provider.send("eth_requestAccounts", []).then(async () => {});
-//         const signer = await provider.getSigner();
-//         const contract = new ethers.Contract(CONTRACT, abi.abi, signer);
-//         return contract;
-//       } catch (error) {
-//         alert(`Error connecting to MetaMask: ${error?.message ?? error}`);
-//       }
-//     } else {
-//       alert("MetaMask not installed");
-//     }
-//   }
-// }
-
-// export async function fetchCanditates() {
-//   // const contract = await connectToMetaMask();
-//   if (contract) {
-//     const candidatesList = await contract.getAllCandidates();
-//     const formattedCandidates = candidatesList.map((candidate, index) => {
-//       return {
-//         index: index,
-//         name: candidate.name,
-//         img: candidate.image,
-//         voteCount: ethers.toNumber(candidate.voteCount),
-//       };
-//     });
-//     return formattedCandidates;
-//   }
-// }
-
 async function getContract() {
   let web3: Web3;
-  // if (window.ethereum) {
-  // const provider = new Web3.providers.HttpProvider(window.ethereum);
-  // web3 = new Web3(provider);
-  // web3 = new Web3(window.ethereum);
-  // await window.ethereum.request({ method: "eth_requestAccounts" });
-  // const accounts = await web3.eth.getAccounts();
-  // await window.ethereum.request({ method: "eth_requestAccounts" });
-  // // web3 = new Web3(new Web3.providers.HttpProvider(window.ethereum));
-  // console.log(web3);
-  // } else {
   web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
-  // }
   const contract: any = new web3.eth.Contract(abi.abi, deployedAddress);
   const providersAccounts: string[] = await web3.eth.getAccounts();
   const account: string = providersAccounts[0];

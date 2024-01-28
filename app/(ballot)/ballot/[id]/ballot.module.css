@@ -1,0 +1,41 @@
+.card-radio {
+    display: none;
+}
+
+.card-label {
+    opacity: 80%;
+    flex: 1;
+    height: 40vh;
+    font-weight: bold;
+    /* background-color: #3498db; */
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition:
+        background-color 0.3s,
+        color 0.3s;
+}
+
+.card-radio:checked + .card-label {
+    opacity: 100%;
+}
+
+.card-label:hover {
+    background-color: #f0b323;
+}
+
+.card-radio:checked + .card-label::before {
+    content: "\1F4CC";
+    /* content: ""; */
+
+    width: 12px;
+    height: 12px;
+    font-size: 40px;
+    color: #fff;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

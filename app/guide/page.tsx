@@ -7,9 +7,9 @@ import { PolygonBlur, PolygonBlurSecond } from "../(home)/page";
 import Loading from "../loading";
 
 const guides = [
-  { img: "/1.png", title: "Masukan Data Diri", desc: "saas" },
-  { img: "/2.png", title: "Tunggu Verifikasi", desc: "saas" },
-  { img: "/3.png", title: "Memilih", desc: "saas" },
+  { img: "/guide-1.png", title: "Masukan Data Diri", desc: "saas" },
+  { img: "/guide-2.png", title: "Tunggu Verifikasi", desc: "saas" },
+  { img: "/guide-3.png", title: "Memilih", desc: "saas" },
   { img: "special", title: "", desc: "Pastikan kamu sudah paham cara memilih" },
 ];
 
@@ -33,33 +33,33 @@ export default function Guide({ params }: { params: { index: string } }) {
     <>
       {!loading ? (
         <div className="bg-white">
-          <div className="relative isolate px-6 lg:px-8">
+          <div className="relative isolate px-6 ">
             <PolygonBlur />
 
-            <div className="fixed top-0 w-full min-h-screen">
+            <div className="fixed top-0 min-h-screen w-full">
               <div className="">
                 <input
-                  className="sr-only peer"
+                  className="peer sr-only"
                   type="radio"
                   name="carousel"
                   id="carousel-1"
                   checked
                 />
-                <div className="max-w-4xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-lg shadow-lg transition-all duration-300 opacity-0 peer-checked:opacity-100 peer-checked:z-10 z-0">
+                <div className="absolute left-1/2 top-1/2 z-0 max-w-4xl  -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white opacity-0 shadow-lg transition-all duration-300 peer-checked:z-10 peer-checked:opacity-100 dark:bg-gray-800">
                   {step !== 3 ? (
                     <>
                       <Image
-                        height={400}
-                        width={500}
+                        height={900}
+                        width={1200}
                         className="rounded-t-lg object-cover"
                         src={guides[step].img}
                         alt={guides[step].title}
                       />
-                      <div className="py-4 px-8 text-center dark:text-white text-gray-900">
-                        <h1 className="hover:cursor-pointer mt-2 font-bold text-2xl tracking-tight">
+                      <div className="px-8 py-4 text-center text-gray-900 dark:text-white">
+                        <h1 className="mt-2 text-2xl font-bold tracking-tight hover:cursor-pointer">
                           {guides[step].title}
                         </h1>
-                        <p className="hover:cursor-pointer py-3 text-gray-600 dark:text-slate-300 leading-6">
+                        <p className="py-3 leading-6 text-gray-600 hover:cursor-pointer dark:text-slate-300">
                           {guides[step].desc}
                         </p>
                       </div>
@@ -72,7 +72,7 @@ export default function Guide({ params }: { params: { index: string } }) {
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        className="w-32 h-32 mx-auto text-blue-600 dark:text-blue-500"
+                        className="mx-auto h-32 w-32 text-blue-600 dark:text-blue-500"
                       >
                         <path
                           stroke-linecap="round"
@@ -81,11 +81,11 @@ export default function Guide({ params }: { params: { index: string } }) {
                         />
                       </svg>
 
-                      <div className="py-8 px-8 text-center">
-                        <h1 className="hover:cursor-pointer text-gray-900 dark:text-slate-200 font-bold text-2xl tracking-tight">
+                      <div className="px-8 py-8 text-center">
+                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 hover:cursor-pointer dark:text-slate-200">
                           Apakah Kamu Sudah Siap Memilih?
                         </h1>
-                        <p className="hover:cursor-pointer py-3 text-gray-600 dark:text-slate-300 leading-6">
+                        <p className="py-3 leading-6 text-gray-600 hover:cursor-pointer dark:text-slate-300">
                           {guides[step].desc}
                         </p>
 
@@ -94,7 +94,7 @@ export default function Guide({ params }: { params: { index: string } }) {
                             onClick={() => setLoading(true)}
                             className="group relative h-12 w-full overflow-hidden rounded bg-white text-lg shadow"
                           >
-                            <div className="absolute inset-0 w-[0px] bg-green-500 dark:bg-green-600 transition-all duration-[250ms] ease-out group-hover:w-full"></div>
+                            <div className="absolute inset-0 w-[0px] bg-green-500 transition-all duration-[250ms] ease-out group-hover:w-full dark:bg-green-600"></div>
                             <span className="relative text-black group-hover:text-white">
                               Ya! Siap.
                             </span>
@@ -103,8 +103,8 @@ export default function Guide({ params }: { params: { index: string } }) {
                       </div>
                     </>
                   )}
-                  <div className="absolute top-1/2 w-full flex justify-between z-20">
-                    <label className="inline-block text-gray-800 cursor-pointer -translate-x-9 bg-white rounded-full shadow-md active:translate-y-0.5">
+                  <div className="absolute top-1/2 z-20 flex w-full justify-between">
+                    <label className="inline-block -translate-x-9 cursor-pointer rounded-full bg-white text-gray-800 shadow-md active:translate-y-0.5">
                       {step >= 1 ? (
                         <svg
                           onClick={handlePrev}
@@ -124,7 +124,7 @@ export default function Guide({ params }: { params: { index: string } }) {
                       )}
                     </label>
 
-                    <label className="inline-block text-gray-800 cursor-pointer translate-x-9 bg-white rounded-full shadow-md active:translate-y-0.5">
+                    <label className="inline-block translate-x-9 cursor-pointer rounded-full bg-white text-gray-800 shadow-md active:translate-y-0.5">
                       {step < 3 ? (
                         <svg
                           onClick={handleNext}

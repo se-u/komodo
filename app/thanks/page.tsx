@@ -1,5 +1,3 @@
-import { NavBottom } from "@/app/ui/home/nav-bottom";
-
 export default function Thanks() {
   return (
     <>
@@ -7,13 +5,13 @@ export default function Thanks() {
         <div className="hero-content flex-col lg:flex-row-reverse">
           <img src="/logologin.png" className="max-w-sm" />
           <div>
-            <h1 className="text-5xl font-bold text-white border-b-[5px] inline border-[#F0B323]">
+            <h1 className="inline border-b-[5px] border-[#F0B323] text-5xl font-bold text-white">
               Gerbang Suara
             </h1>
-            <h2 className="text-3xl pt-10 font-bold text-[#F0B323]">
+            <h2 className="pt-10 text-3xl font-bold text-[#F0B323]">
               Terimakasih Atas Pertisipasinya !
             </h2>
-            <h3 className="text-white font-bold">
+            <h3 className="font-bold text-white">
               Klik, Pilih Aman. Demokrasi Tanpa Keraguan
             </h3>
             <p className="py-2 text-white">
@@ -28,7 +26,6 @@ export default function Thanks() {
           </div>
         </div>
       </div>
-      <NavBottom />
     </>
   );
 }
