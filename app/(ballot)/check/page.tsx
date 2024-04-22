@@ -80,13 +80,12 @@ export default function Validate() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
       const formData = new FormData(e.currentTarget);
-      if (formData.get('name') !== "calvin") {
+      if (formData?.get("name") !== "calvin") {
         setLoading(false);
         setError(true);
       } else {
@@ -98,7 +97,6 @@ export default function Validate() {
     }
   };
 
- 
   return (
     <>
       <AlertDialog open={error} onOpenChange={setError}>
@@ -108,7 +106,8 @@ export default function Validate() {
               Maaf Permintaan Tidak Dapat Kami Proses
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Maaf anda sudah melakukan voting atau sudah terdaftar
+              Maaf anda sudah melakukan voting atau sudah terdaftar (pakai name:
+              calvin biar ke kirim)
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -184,14 +183,13 @@ export default function Validate() {
                   placeholder="Nomor Induk Kependudukan"
                 />
               </div>
-        
+
               <button
                 type="submit"
                 className="mb-2 mt-4 block w-full rounded bg-black py-2 font-semibold text-white"
               >
                 Verifikasi
               </button>
-            
             </form>
           </div>
         </div>
@@ -201,5 +199,4 @@ export default function Validate() {
       ;
     </>
   );
-  
 }
