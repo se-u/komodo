@@ -1,4 +1,4 @@
-"use server"; 
+"use server";
 import { revalidatePath, unstable_noStore } from "next/cache";
 import abi from "@/artifacts/contracts/Election.sol/Election.json";
 import { redirect } from "next/navigation";
@@ -11,7 +11,7 @@ import { deployedAddress } from "./utils";
 // Get Contract
 async function getContract() {
   const web3 = new Web3(
-    new Web3.providers.HttpProvider("http://localhost:7545")
+    new Web3.providers.HttpProvider("http://localhost:7545"),
   );
   const contract: any = new web3.eth.Contract(abi.abi, deployedAddress);
   const providersAccounts: string[] = await web3.eth.getAccounts();
@@ -30,7 +30,6 @@ function revalidateAndRedirect(path: string) {
   revalidatePath(path);
   redirect(path);
 }
-
 
 // Navigate to Ballot
 export async function navigateBallot(id: string) {
@@ -63,8 +62,9 @@ export async function validateVoter(formData: FormData, account: string) {
     });
     return receipt.events.VoterRegistered.returnValues;
   } catch (error) {
+    console.log(error);
     if (error instanceof ContractExecutionError) {
-        handleContractError(error);
+      handleContractError(error);
     }
   }
 }
@@ -83,12 +83,11 @@ export async function updateVoter(formData: FormData) {
         gas: GAS_LIMIT,
         gasPrice: GAS_PRICE,
       });
- 
   } catch (error) {
     if (error instanceof ContractExecutionError) {
-      handleContractError(error)
+      handleContractError(error);
     }
-    handleGenericError(error)
+    handleGenericError(error);
   }
   revalidateAndRedirect("/dashboard/voter");
 }
@@ -108,8 +107,9 @@ export async function voteCandidate(formData: FormData, account: string) {
     });
   } catch (error) {
     if (error instanceof ContractExecutionError) {
-      handleContractError(error)
-    } handleGenericError(error)
+      handleContractError(error);
+    }
+    handleGenericError(error);
   }
   redirect("/thanks");
 }
@@ -117,8 +117,8 @@ export async function voteCandidate(formData: FormData, account: string) {
 // Candidate: add
 export async function addCandidate(formData: FormData) {
   const { myContract, defaultAccount } = await getContract();
-  const name = formData.get("name")
-  const image = formData.get("image")
+  const name = formData.get("name");
+  const image = formData.get("image");
   try {
     const receipt: any = await myContract.methods
       .addCandidate(name, image)
@@ -129,11 +129,11 @@ export async function addCandidate(formData: FormData) {
       });
   } catch (error) {
     if (error instanceof ContractExecutionError) {
-      handleContractError(error)
+      handleContractError(error);
     }
-    handleGenericError(error)
+    handleGenericError(error);
   }
-  revalidateAndRedirect("/dashboard/settings/")
+  revalidateAndRedirect("/dashboard/settings/");
 }
 
 // Candidate: update
@@ -142,7 +142,7 @@ export async function updateCandidate(formData: FormData) {
   const index = Number(formData.get("index"));
   const name = formData.get("name");
   const image = formData.get("image");
-  
+
   try {
     const receipt: any = await myContract.methods
       .updateCandidate(index, name, image)
@@ -153,17 +153,17 @@ export async function updateCandidate(formData: FormData) {
       });
   } catch (error) {
     if (error instanceof ContractExecutionError) {
-        handleContractError(error);
+      handleContractError(error);
     }
-    handleGenericError(error)
+    handleGenericError(error);
   }
-  revalidateAndRedirect("/dashboard/settings/")
+  revalidateAndRedirect("/dashboard/settings/");
 }
 
 // Admin
 export async function addAdmin(formData: FormData) {
   const { myContract, defaultAccount } = await getContract();
-  const address = formData.get("address")
+  const address = formData.get("address");
   try {
     const receipt: any = await myContract.methods.addAdmin(address).send({
       from: defaultAccount,
@@ -172,11 +172,11 @@ export async function addAdmin(formData: FormData) {
     });
   } catch (error) {
     if (error instanceof ContractExecutionError) {
-      handleContractError(error)
+      handleContractError(error);
     }
-    handleGenericError(error)
+    handleGenericError(error);
   }
-  revalidateAndRedirect("/dashboard/settings/")
+  revalidateAndRedirect("/dashboard/settings/");
 }
 
 export async function updateStation(formData: FormData) {
@@ -213,9 +213,9 @@ export async function toggleActive() {
     });
   } catch (error) {
     if (error instanceof ContractExecutionError) {
-      handleContractError(error)
+      handleContractError(error);
     }
-    handleGenericError(error)
+    handleGenericError(error);
   }
   revalidatePath("/");
 }

@@ -8,6 +8,8 @@ export default function HomeLayout({
   return (
     <>
       {children}
+
+      {/* 3 Menu Bottom Nav Disini */}
       <BottomNav />
     </>
   );

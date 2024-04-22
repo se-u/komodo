@@ -17,19 +17,13 @@ const links = [
     prefetch: true,
   },
   { name: "Statistik", href: "/statistic", prefetch: true, icon: ChartBarIcon },
-  {
-    name: "About",
-    href: "/about",
-    prefetch: true,
-    icon: QuestionMarkCircleIcon,
-  },
 ];
 
 export default function BottomNav() {
   "use client";
   const path = usePathname();
   return (
-    <section className="block fixed inset-x-0 bottom-0 z-10 bg-slate-50 shadow border-t-2 backdrop-filter backdrop-blur-lg bg-opacity-30">
+    <section className="fixed inset-x-0 bottom-0 z-10 block border-t-2 bg-slate-50 bg-opacity-30 shadow backdrop-blur-lg backdrop-filter">
       <div id="tabs" className="flex justify-between">
         {links.map((link) => {
           const LinkIcon = link.icon;
@@ -38,13 +32,13 @@ export default function BottomNav() {
               key={link.name}
               href={link.href}
               className={clsx(
-                "w-full  focus:text-blue-500 hover:text-blue-500 justify-center inline-block text-center pt-2 pb-1",
+                "inline-block  w-full justify-center pb-1 pt-2 text-center hover:text-blue-500 focus:text-blue-500",
                 path === link.href
                   ? "text-blue-600  dark:text-blue-400"
-                  : "text-gray-800 dark:text-gray-200"
+                  : "text-gray-800 dark:text-gray-200",
               )}
             >
-              <LinkIcon className="w-[25px] h-[25px] inline-block mb-1" />
+              <LinkIcon className="mb-1 inline-block h-[25px] w-[25px]" />
               <span className="block text-xs">{link.name}</span>
             </Link>
           );

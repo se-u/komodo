@@ -11,20 +11,7 @@ import {
 
 type Props = {};
 
-const data = [
-  {
-    name: "Sindu",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Sebastian",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Aydin",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-];
+const data = [];
 
 export default function BarChart({}: Props) {
   return (

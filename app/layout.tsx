@@ -19,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* ThemeProvided buat pindah darkmode sama light, fokus salah satu aja dulu */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -26,6 +27,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
+
+            {/* Navbar atas yang ada realtime aktif tapi ntar gak dipakai realtimenya */}
             <StatusBar />
 
             {children}

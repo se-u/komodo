@@ -1,36 +1,36 @@
 "use client";
-import { fetchCandidates, fetchVotersById } from "@/app/lib/data";
 import { FormEvent, Suspense, useContext, useEffect, useState } from "react";
 import style from "./ballot.module.css";
 import { voteCandidate } from "@/app/lib/actions";
 import { AuthContext } from "@/app/auth-context";
 import { Button } from "@/components/ui/button";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+
 
 export function Ballot({ uuid }: { uuid: string }) {
   const [account, _] = useContext(AuthContext);
-  const [candidates, setCandidates] = useState([]);
+  const [candidates, setCandidates] = useState([{index: 1,name: "budi", count: 1, image: "https://cdn0-production-images-kly.akamaized.net/GSshGtLLQ2k4BB3xcSJxkUAmEHs=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3420068/original/014482000_1617610109-Budi_Doremi_Profile_Picture_1.jpg"}]);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const formData = new FormData(e.currentTarget);
-      const response = await voteCandidate(formData, account!!);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(() => {
-    console.log(`cca : ${account}`);
-    const getCandidates = async () => {
-      const candidates = await fetchCandidates();
-      // console.log(`candidates: ${candidates[0].count}`);
-      setCandidates(candidates);
-    };
+  // useEffect(() => {
+  //   console.log(`cca : ${account}`);
+  //   const getCandidates = async () => {
+  //     // const candidates = await fetchCandidates();
+  //      const candidates = [{name: "Budi", count: 10}];
+  //     // console.log(`candidates: ${candidates[0].count}`);
+  //     setCandidates(candidates);
+  //   };
 
-    getCandidates();
-  }, []);
+  //   getCandidates();
+  // }, []);
   return (
     <div className="min-h-screen px-24 pt-24">
       <div
@@ -80,7 +80,7 @@ export function Ballot({ uuid }: { uuid: string }) {
       </div>
 
       <form
-        onSubmit={handleSubmit}
+
         className="mt-10 flex flex-wrap justify-center gap-5"
       >
         <input type="hidden" name="uuid" value={uuid} />
@@ -118,9 +118,12 @@ export function Ballot({ uuid }: { uuid: string }) {
           </div>
         ))}
         <section className="fixed bottom-14">
-          <Button className="h-12 w-80 text-lg">
+          <Link href={"/thanks"}>
+            <Button  className="h-12 w-80 text-lg">
             <PaperPlaneIcon className="mx-1" /> KIRIM SUARA
-          </Button>
+
+            </Button>
+          </Link>
         </section>
       </form>
     </div>
@@ -144,26 +147,26 @@ const VerificationLoading = () => {
 export default function Page({ params }: { params: { id: string } }) {
   const [voter, setVoter] = useState({
     isRegistered: false,
-    isVerified: false,
-    id: "any",
-    name: "any",
-    idCard: "any",
+    isVerified: true,
+    id: "1",
+    name: "budi",
+    idCard: "123",
     account: "any",
   });
   const id = params.id;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const voter: any = await fetchVotersById(params.id);
-      setVoter(voter);
-    };
+  // useEffect(() => {
+  //   // const fetchData = async () => {
+  //   //   const voter: any = await fetchVotersById(params.id);
+  //   //   setVoter(voter);
+  //   // };
 
-    // Fetch data initially
-    fetchData();
-    // Set up interval to fetch data every 1 second
-    const intervalId = setInterval(fetchData, 1000);
-    return () => clearInterval(intervalId);
-  }, [params.id]);
+  //   // Fetch data initially
+  //   // fetchData();
+  //   // Set up interval to fetch data every 1 second
+  //   // const intervalId = setInterval(fetchData, 1000);
+  //   // return () => clearInterval(intervalId);
+  // }, [params.id]);
 
   return (
     <>{!voter?.isVerified ? <VerificationLoading /> : <Ballot uuid={id} />}</>

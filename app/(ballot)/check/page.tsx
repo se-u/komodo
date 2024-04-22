@@ -1,16 +1,14 @@
 "use client";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import { fetchIsVoteActive } from "@/app/lib/data";
 import Form from "@/app/ui/home/validate-form";
 import { FormEvent, useContext, useState } from "react";
 import { navigateBallot, validateVoter } from "@/app/lib/actions";
 import { AuthContext } from "@/app/auth-context";
-import Html5QrcodePlugin from "@/app/components/scanner";
+
 import { PolygonBlur, PolygonBlurSecond } from "@/app/(home)/page";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -51,7 +49,7 @@ function Loading() {
 }
 
 export async function ValidateForm() {
-  const isActive = await fetchIsVoteActive("");
+  const isActive = false;
   return (
     <>
       {isActive ? (
@@ -82,28 +80,25 @@ export default function Validate() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  console.log(connectedAccount);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
       const formData = new FormData(e.currentTarget);
-      const response = await validateVoter(formData, connectedAccount || "");
-      if (response?.error) {
+      if (formData.get('name') !== "calvin") {
+        setLoading(false);
+        setError(true);
       } else {
-        navigateBallot(response.uuid);
+        navigateBallot("dummy");
       }
-      console.log(response);
     } catch (error: any) {
       setLoading(false);
       setError(true);
     }
   };
 
-  const onNewScanResult = (decodedText: string) => {
-    // handle decoded results here
-    console.log(decodedText);
-  };
+ 
   return (
     <>
       <AlertDialog open={error} onOpenChange={setError}>
@@ -189,39 +184,14 @@ export default function Validate() {
                   placeholder="Nomor Induk Kependudukan"
                 />
               </div>
-              {/* <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                  />
-                </svg>
-                <input
-                  className="pl-2 outline-none border-none"
-                  type="text"
-                  name="motherName"
-                  id=""
-                  placeholder="Nama Ibu Kandung"
-                />
-              </div> */}
-
+        
               <button
                 type="submit"
                 className="mb-2 mt-4 block w-full rounded bg-black py-2 font-semibold text-white"
               >
                 Verifikasi
               </button>
-              {/* <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
-        Forgot Password ?
-      </span> */}
+            
             </form>
           </div>
         </div>
@@ -231,16 +201,5 @@ export default function Validate() {
       ;
     </>
   );
-  // <div
-  //   className="flex items-center w-full h-screen justify-center"
-  //   style={{
-  //     backgroundImage: `linear - gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url('/prambanan.jpg')`,
-  //     backgroundBlendMode: "multiply",
-  //     backgroundSize: "cover",
-  //     backgroundPosition: "center",
-  //   }}
-  // >
-  //   <StatusBar />
-  //   <ValidateForm />
-  // </div>
+  
 }

@@ -7,9 +7,21 @@ import { PolygonBlur, PolygonBlurSecond } from "../(home)/page";
 import Loading from "../loading";
 
 const guides = [
-  { img: "/guide-1.png", title: "Masukan Data Diri", desc: "saas" },
-  { img: "/guide-2.png", title: "Tunggu Verifikasi", desc: "saas" },
-  { img: "/guide-3.png", title: "Memilih", desc: "saas" },
+  {
+    img: "/guide-1.png",
+    title: "Hubungkan Metamask",
+    desc: "Sambungkan dompet Metamask Anda untuk memverifikasi dan mencatat suara Anda secara aman.",
+  },
+  {
+    img: "/guide-2.png",
+    title: "Pastikan Vote Aktif",
+    desc: "Pastikan bahwa hak pilih Anda aktif dan terdaftar dalam sistem e-voting.",
+  },
+  {
+    img: "/guide-3.png",
+    title: "Masukkan Data Diri",
+    desc: "Isi formulir dengan data diri yang akurat untuk proses verifikasi identitas.",
+  },
   { img: "special", title: "", desc: "Pastikan kamu sudah paham cara memilih" },
 ];
 
