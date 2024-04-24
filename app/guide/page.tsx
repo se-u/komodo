@@ -3,7 +3,6 @@ import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { PolygonBlur, PolygonBlurSecond } from "../(home)/page";
 import Loading from "../loading";
 
 const guides = [
@@ -100,8 +99,6 @@ export default function Guide({ params }: { params: { index: string } }) {
         )}  */}
 
           <div className="relative isolate px-6 lg:px-8">
-            <PolygonBlur />
-
             <div className="fixed top-0 w-full min-h-screen">
               <div className="">
                 <input
@@ -220,8 +217,6 @@ export default function Guide({ params }: { params: { index: string } }) {
                 </div>
               </div>
             </div>
-
-            <PolygonBlurSecond />
           </div>
         </div>
       ) : (

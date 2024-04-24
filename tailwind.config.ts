@@ -1,30 +1,46 @@
 import type { Config } from "tailwindcss";
+
+const flowbite = require("flowbite-react/tailwind");
+
 const config: Config = {
-  content: [
+    content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", 
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-
-    // Or if using `src` directory:
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-
-  theme: {
-    extend: {
-      
-      dropShadow: {
-        glow: [
-          "0 0px 20px rgba(255,255, 255, 0.10)",
-          "0 0px 65px rgba(255, 255,255, 0.15)",
-        ],
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+    flowbite.content()],
+    theme: {
+        extend: {
+            colors: {
+                primary: {
+                    50: "#e9f7ff",
+                    100: "#ceecff",
+                    200: "#a8dfff",
+                    300: "#6dceff",
+                    400: "#28b0ff",
+                    500: "#0086ff",
+                    600: "#005cff",
+                    700: "#0042ff",
+                    800: "#0036b1",
+                    900: "#0035b1",
+                    950: "#012169",
+                },
+                neutral: {
+                    "50": "#f3f6f8",
+                    "100": "#e1e9ec",
+                    "200": "#c7d4da",
+                    "300": "#a0b5c0",
+                    "400": "#728f9e",
+                    "500": "#567384",
+                    "600": "#4a6070",
+                    "700": "#41515d",
+                    "800": "#3a4650",
+                    "900": "#343c45",
+                    "950": "#13171b",
+                },
+            },
+        },
     },
-  },
-  plugins: [],
+    plugins: [flowbite.plugin()],
 };
+
 export default config;

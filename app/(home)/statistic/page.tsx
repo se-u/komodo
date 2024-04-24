@@ -7,28 +7,23 @@ import { number } from "zod";
 export const Chart = async () => {
   const voteActive = await fetchIsVoteActive("");
   const candidates = await fetchCandidates();
-  let chartData = [];
-  if (candidates.length !== 0) {
-    chartData = candidates.reduce(
-      (
-        result: { [x: string]: number },
-        candidate: { name: string; count: any }
-      ) => {
-        const candidateName = candidate.name.trim().toLowerCase();
-        result[candidateName] = Number(candidate.count);
-        return result;
-      }
-    );
-  }
+
+  const chartData = candidates.reduce(
+    (
+      result: { [x: string]: number },
+      candidate: { name: string; count: any }
+    ) => {
+      const candidateName = candidate.name.trim().toLowerCase();
+      result[candidateName] = Number(candidate.count);
+      return result;
+    },
+    {}
+  );
 
   return (
     <>
       {!voteActive ? (
-        <div className="w-2/3 ml-4">
-          <div className=" p-4">
-            <BarChart dataObject={chartData} title="Pemilihan" />
-          </div>
-        </div>
+        <BarChart dataObject={chartData} title="Data Pemilihan" />
       ) : (
         <div className="container mx-auto p-4 flex items-center justify-center h-screen">
           <div className="text-center">
@@ -62,11 +57,11 @@ export default function Statistik() {
               Klik, Pilih, Aman. Demokrasi Milenial
             </p>
           </div>
-
-          <Suspense fallback={<div>Loading...</div>}>
-            <Chart />
-          </Suspense>
         </div>
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <Chart />
+        </Suspense>
       </div>
     </div>
   );

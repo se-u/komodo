@@ -1,12 +1,7 @@
 "use client";
-import Link from "next/link";
-import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import { fetchIsVoteActive } from "@/app/lib/data";
-import Form from "@/app/ui/home/validate-form";
 import { FormEvent, useContext, useState } from "react";
 import { navigateBallot, validateVoter } from "@/app/lib/actions";
 import { AuthContext } from "@/app/auth-context";
-import Html5QrcodePlugin from "@/app/components/scanner";
 
 function Loading() {
   return (
@@ -38,37 +33,9 @@ function Loading() {
   );
 }
 
-export async function ValidateForm() {
-  const isActive = await fetchIsVoteActive("");
-  return (
-    <>
-      {isActive ? (
-        <Form />
-      ) : (
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-red-500 mb-4">
-              Akses Ditutup
-            </h1>
-            <p className="text-slate-200 mb-4">Pemilihan Telah Berakhir</p>
-            <Link href="/">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                <ArrowLeftIcon className="w-6 h-6 mr-2" />
-                Kembali
-              </button>
-            </Link>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
 export default function Validate() {
   const [connectedAccount, _] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-
-  console.log(connectedAccount);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -86,33 +53,10 @@ export default function Validate() {
     }
   };
 
-  const onNewScanResult = (decodedText: string) => {
-    // handle decoded results here
-    console.log(decodedText);
-  };
   return (
     <>
       {!loading ? (
-        <div className="h-screen md:flex">
-          {/* bg-gradient-to-tr from-blue-800 to-purple-700 */}
-          {/* bg-gradient-to-tr from-blue-800 to-purple-700 i  */}
-          <div className="relative overflow-hidden md:flex w-1/2 justify-around items-center hidden">
-            <div className="z-10 m-5">
-              <div className="bg-slate rounded-md bg-slate-100 p-5">
-                <Html5QrcodePlugin
-                  fps={10}
-                  qrbox={250}
-                  disableFlip={false}
-                  qrCodeSuccessCallback={onNewScanResult}
-                />
-              </div>
-            </div>
-            <div className="absolute -bottom-32 -left-40 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-            <div className="absolute -bottom-40 -left-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-            <div className="absolute -top-40 -right-0 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-            <div className="absolute -top-20 -right-20 w-80 h-80 border-4 rounded-full border-opacity-30 border-t-8"></div>
-          </div>
-
+        <div className="h-screen md:flex justify-center">
           <div className="flex md:w-1/2 justify-center py-10 items-center bg-white">
             <form className="w-3/4" onSubmit={handleSubmit}>
               <h1 className="text-gray-800 font-bold text-2xl mb-1">
@@ -135,7 +79,7 @@ export default function Validate() {
                   />
                 </svg>
                 <input
-                  className="pl-2 outline-none w-full "
+                  className="pl-2 outline-none border-none w-full "
                   type="text"
                   name="name"
                   id=""
@@ -158,7 +102,7 @@ export default function Validate() {
                   />
                 </svg>
                 <input
-                  className="pl-2 outline-none border-none w-full"
+                  className="pl-2  border-none w-full "
                   type="text"
                   name="idCard"
                   id=""
@@ -195,9 +139,6 @@ export default function Validate() {
               >
                 Login
               </button>
-              {/* <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
-        Forgot Password ?
-      </span> */}
             </form>
           </div>
         </div>
@@ -207,16 +148,4 @@ export default function Validate() {
       ;
     </>
   );
-  // <div
-  //   className="flex items-center w-full h-screen justify-center"
-  //   style={{
-  //     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url('/prambanan.jpg')`,
-  //     backgroundBlendMode: "multiply",
-  //     backgroundSize: "cover",
-  //     backgroundPosition: "center",
-  //   }}
-  // >
-  //   <StatusBar />
-  //   <ValidateForm />
-  // </div>
 }

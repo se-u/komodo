@@ -8,7 +8,7 @@ export default function HomeLayout({
   return (
     <>
       {children}
-      <BottomNav />
+      {/* <BottomNav /> */}
     </>
   );
 }
