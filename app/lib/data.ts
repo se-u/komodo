@@ -73,17 +73,17 @@ export async function fetchVoters() {
       gas: 1000000,
       gasPrice: "10000000000",
     });
-    const votersFormatted = voters.map((voter: string[], index: any) => {
-      return {
-        index: index,
-        id: voter[0],
-        name: voter[1],
-        idCard: voter[2],
-        isVerified: true ? voter[3] === "Verified" : false,
-        isRegistered: true ? voter[4] === "Registered" : false,
-      };
-    });
-    return votersFormatted;
+    // const votersFormatted = voters.map((voter: string[], index: any) => {
+    //   return {
+    //     index: index,
+    //     id: voter[0],
+    //     name: voter[1],
+    //     idCard: voter[2],
+    //     isVerified: true ? voter[3] === "Verified" : false,
+    //     isRegistered: true ? voter[4] === "Registered" : false,
+    //   };
+    // });
+    return voters;
   } catch (error) {
     if (error instanceof ContractExecutionError) {
       console.log(error.innerError.message);
@@ -214,7 +214,7 @@ export async function fetchCandidates() {
       gasPrice: "10000000000",
     });
     // console.log(`fecthCandidates: ${receipt}`);
-    // console.log(receipt);
+    console.log(receipt);
     const candidatesFormated = receipt.map((candidate: any[], index: any) => {
       return {
         index: index,
@@ -239,7 +239,7 @@ export async function fetchIsVoteActive(account: string) {
   unstable_noStore();
   const { myContract, defaultAccount } = await getContract();
   try {
-    const receipt: any = await myContract.methods.isVoteActive().call({
+    const receipt: any = await myContract.methods.electionActive().call({
       from: defaultAccount,
       gas: 1000000,
       gasPrice: "10000000000",

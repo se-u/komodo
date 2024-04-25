@@ -1,7 +1,10 @@
 "use client";
-import { FormEvent, useContext, useState } from "react";
-import { navigateBallot, validateVoter } from "@/app/lib/actions";
-import { AuthContext } from "@/app/auth-context";
+import { FormEvent, useContext, useEffect, useState } from "react";
+import Web3, { ContractExecutionError } from "web3";
+import abi from "@/artifacts/contracts/Election.sol/Election.json";
+
+import { deployedAddress } from "@/app/lib/utils";
+import { useRouter } from "next/navigation";
 
 function Loading() {
   return (
@@ -34,23 +37,94 @@ function Loading() {
 }
 
 export default function Validate() {
-  const [connectedAccount, _] = useContext(AuthContext);
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  // Metamask
+  const [walletAddress, setWalletAddress] = useState("");
+
+  useEffect(() => {
+    getCurrentWalletConnected();
+    addWalletListener();
+  }, [walletAddress]);
+
+  const getCurrentWalletConnected = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
+          console.log(accounts[0]);
+        } else {
+          console.log("Connect to MetaMask using the Connect button");
+        }
+      } catch (err: any) {
+        console.error(err.message);
+      }
+    } else {
+      /* MetaMask is not installed */
+      console.log("Please install MetaMask");
+    }
+  };
+
+  const addWalletListener = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      window.ethereum.on("accountsChanged", (accounts: any[]) => {
+        setWalletAddress(accounts[0]);
+        console.log(accounts[0]);
+      });
+    } else {
+      /* MetaMask is not installed */
+      setWalletAddress("");
+      console.log("Please install MetaMask");
+    }
+  };
+  // End Metamask
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    // Contract
+    const formData = new FormData(e.currentTarget);
+    const web3 = new Web3(
+      new Web3.providers.HttpProvider("http://localhost:7545")
+    );
+    const contract: any = new web3.eth.Contract(abi.abi, deployedAddress);
     try {
-      const formData = new FormData(e.currentTarget);
-      const response = await validateVoter(formData, connectedAccount || "");
-      if (response?.error) {
+      const isAlreadyRegister: any = await contract.methods
+        .chainVoterId(formData.get("idCard"))
+        .call({
+          from: walletAddress,
+          gas: 1000000,
+          gasPrice: "10000000000",
+        });
+
+      if (isAlreadyRegister) {
+        alert("Anda sudah terdaftar sebelumnya");
       } else {
-        navigateBallot(response.uuid);
+        const addChainVoter: any = await contract.methods
+          .addChainVoter(formData.get("idCard"))
+          .send({
+            from: walletAddress,
+            gas: 1000000,
+            gasPrice: "10000000000",
+          });
+        const response = addChainVoter.events.addChainVoterEvent.returnValues;
+        if (response.status) {
+          router.push("/");
+        }
       }
-      console.log(response);
     } catch (error) {
-      setLoading(false);
-      console.error(error);
+      if (error instanceof ContractExecutionError) {
+        console.log(error.innerError.message);
+      }
+      console.log(error);
     }
+
+    // End Contract
   };
 
   return (

@@ -5,14 +5,14 @@ import {
 } from "@heroicons/react/16/solid";
 import { DeleteAdmin } from "../buttons";
 import { fetchAdmins, fetchStation } from "@/app/lib/data";
-import { addAdmin, updateStation } from "@/app/lib/actions";
+// import { addAdmin, updateStation } from "@/app/lib/actions";
 
 export default async function AdminForm() {
   const admins = await fetchAdmins();
   const station = await fetchStation();
   return (
     <>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+      {/* <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <form
           action={updateStation}
           className="relative flex flex-1 flex-shrink-0 "
@@ -45,11 +45,10 @@ export default async function AdminForm() {
             <PlusIcon className="h-5" />
           </button>
         </form>
-      </div>
+      </div> */}
 
-      <div className="overflow-x-auto">
+      {/* <div className="overflow-x-auto">
         <table className="table">
-          {/* head */}
           <thead>
             <tr>
               <th></th>
@@ -58,7 +57,6 @@ export default async function AdminForm() {
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
             {admins.map((address, index) => (
               <tr key={index}>
                 <th>{index + 1}</th>
@@ -71,7 +69,7 @@ export default async function AdminForm() {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </>
   );
 }

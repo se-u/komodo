@@ -1,9 +1,78 @@
+"use client";
 import { Button } from "../button";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon, UserIcon } from "@heroicons/react/16/solid";
-import { addCandidate } from "@/app/lib/actions";
+import Web3, { ContractExecutionError } from "web3";
+import abi from "@/artifacts/contracts/Election.sol/Election.json";
+import { deployedAddress } from "../../lib/utils";
+import { useEffect, useState } from "react";
 
-export default async function FormCandidates() {
+export async function addCandidate(formData: FormData) {
+  const { name, image, walletAddress } = {
+    name: formData.get("name"),
+    image: formData.get("image"),
+    walletAddress: formData.get("address"),
+  };
+
+  const web3 = new Web3(
+    new Web3.providers.HttpProvider("http://localhost:7545")
+  );
+  const myContract: any = new web3.eth.Contract(abi.abi, deployedAddress);
+  const receipt: any = await myContract.methods.addCandidate(name, image).send({
+    from: walletAddress,
+    gas: 1000000,
+    gasPrice: "10000000000",
+  });
+  console.log(myContract.events.VoterRegistered);
+  console.log("Transaction Hash: " + receipt.transactionHash);
+  console.log("Berhasil Menambahkan Kandidat");
+}
+
+export default function FormCandidates() {
+  // Metamask
+  const [walletAddress, setWalletAddress] = useState("");
+  const [verified, setVerified] = useState(false);
+
+  const getCurrentWalletConnected = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (accounts.length > 0) {
+          setWalletAddress(accounts[0]);
+          console.log(accounts[0]);
+        } else {
+          console.log("Connect to MetaMask using the Connect button");
+        }
+      } catch (err: any) {
+        console.error(err.message);
+      }
+    } else {
+      /* MetaMask is not installed */
+      console.log("Please install MetaMask");
+    }
+  };
+
+  const addWalletListener = async () => {
+    if (typeof window != "undefined" && typeof window.ethereum != "undefined") {
+      window.ethereum.on("accountsChanged", (accounts: any[]) => {
+        setWalletAddress(accounts[0]);
+        console.log(accounts[0]);
+      });
+    } else {
+      /* MetaMask is not installed */
+      setWalletAddress("");
+      console.log("Please install MetaMask");
+    }
+  };
+  // End Metamask
+
+  useEffect(() => {
+    getCurrentWalletConnected();
+    addWalletListener();
+  }, []);
+
   return (
     <form action={addCandidate}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -13,6 +82,7 @@ export default async function FormCandidates() {
             Nomor
           </label>
           <div className="relative mt-2 rounded-md">
+            <input hidden name="address" value={walletAddress} />
             <div className="relative">
               <input
                 id="nomor"
